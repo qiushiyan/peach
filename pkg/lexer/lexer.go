@@ -28,8 +28,7 @@ func (l *Lexer) NextToken() token.Token {
 		tok = token.New(token.SEMICOLON, l.ch)
 	case '=':
 		if l.followedBy("=") {
-			tok.Literal = "=="
-			tok.Type = token.EQ
+			tok = token.New2(token.EQ, "==")
 			l.readChar()
 		} else {
 			tok = token.New(token.ASSIGN, l.ch)
@@ -44,24 +43,21 @@ func (l *Lexer) NextToken() token.Token {
 		tok = token.New(token.MUL, l.ch)
 	case '!':
 		if l.followedBy("=") {
-			tok.Literal = "!="
-			tok.Type = token.NOT_EQ
+			tok = token.New2(token.NOT_EQ, "!=")
 			l.readChar()
 		} else {
 			tok = token.New(token.BANG, l.ch)
 		}
 	case '<':
 		if l.followedBy("=") {
-			tok.Literal = "<="
-			tok.Type = token.LTE
+			tok = token.New2(token.LTE, "<=")
 			l.readChar()
 		} else {
 			tok = token.New(token.LT, l.ch)
 		}
 	case '>':
 		if l.followedBy("=") {
-			tok.Literal = ">="
-			tok.Type = token.GTE
+			tok = token.New2(token.GTE, ">=")
 			l.readChar()
 		} else {
 			tok = token.New(token.GT, l.ch)
@@ -77,23 +73,20 @@ func (l *Lexer) NextToken() token.Token {
 	// multi character tokens
 	case '|':
 		if l.followedBy(">") {
-			tok.Literal = "|>"
-			tok.Type = token.PIPE
+			tok = token.New2(token.PIPE, "|>")
 			l.readChar()
 		} else {
 			tok = token.New(token.ILLEGAL, l.ch)
 		}
 	case 0:
-		tok.Literal = ""
-		tok.Type = token.EOF
+		tok = token.New2(token.EOF, "")
 	default:
 		if isLetter(l.ch) {
-			tok.Literal = l.readIdentifier()
-			tok.Type = token.GetIdentifierType(tok.Literal)
+			literal := l.readIdentifier()
+			tok = token.New2(token.GetIdentifierType(literal), literal)
 			return tok
 		} else if isDigit(l.ch) {
-			tok.Literal = l.readNumber()
-			tok.Type = token.INTEGER
+			tok = token.New2(token.INTEGER, l.readNumber())
 			return tok
 		} else {
 			tok = token.New(token.ILLEGAL, l.ch)

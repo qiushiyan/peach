@@ -51,8 +51,14 @@ type Token struct {
 	Literal string
 }
 
+// Helper function to create a Token
 func New(t TokenType, l byte) Token {
 	return Token{Type: t, Literal: string(l)}
+}
+
+// Same as Token.new but accepts string instead of byte as Literal value
+func New2(t TokenType, l string) Token {
+	return Token{Type: t, Literal: l}
 }
 
 var keywords = map[string]TokenType{
