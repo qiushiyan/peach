@@ -16,17 +16,56 @@ func New(input string) *Lexer {
 }
 
 func (l *Lexer) NextToken() token.Token {
+	l.skipWhitespace()
+
 	var tok token.Token
 
 	switch l.ch {
+	// single character tokens
 	case ',':
 		tok = token.New(token.COMMA, l.ch)
 	case ';':
 		tok = token.New(token.SEMICOLON, l.ch)
 	case '=':
-		tok = token.New(token.ASSIGN, l.ch)
+		if l.followedBy("=") {
+			tok.Literal = "=="
+			tok.Type = token.EQ
+			l.readChar()
+		} else {
+			tok = token.New(token.ASSIGN, l.ch)
+		}
 	case '+':
 		tok = token.New(token.PLUS, l.ch)
+	case '-':
+		tok = token.New(token.MINUS, l.ch)
+	case '/':
+		tok = token.New(token.DIV, l.ch)
+	case '*':
+		tok = token.New(token.MUL, l.ch)
+	case '!':
+		if l.followedBy("=") {
+			tok.Literal = "!="
+			tok.Type = token.NOT_EQ
+			l.readChar()
+		} else {
+			tok = token.New(token.BANG, l.ch)
+		}
+	case '<':
+		if l.followedBy("=") {
+			tok.Literal = "<="
+			tok.Type = token.LTE
+			l.readChar()
+		} else {
+			tok = token.New(token.LT, l.ch)
+		}
+	case '>':
+		if l.followedBy("=") {
+			tok.Literal = ">="
+			tok.Type = token.GTE
+			l.readChar()
+		} else {
+			tok = token.New(token.GT, l.ch)
+		}
 	case '(':
 		tok = token.New(token.LPAREN, l.ch)
 	case ')':
@@ -35,8 +74,9 @@ func (l *Lexer) NextToken() token.Token {
 		tok = token.New(token.RBRACE, l.ch)
 	case '{':
 		tok = token.New(token.LBRACE, l.ch)
+	// multi character tokens
 	case '|':
-		if l.follows('>') {
+		if l.followedBy(">") {
 			tok.Literal = "|>"
 			tok.Type = token.PIPE
 			l.readChar()
@@ -50,6 +90,10 @@ func (l *Lexer) NextToken() token.Token {
 		if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.GetIdentifierType(tok.Literal)
+			return tok
+		} else if isDigit(l.ch) {
+			tok.Literal = l.readNumber()
+			tok.Type = token.INTEGER
 			return tok
 		} else {
 			tok = token.New(token.ILLEGAL, l.ch)
@@ -79,14 +123,38 @@ func (l *Lexer) readIdentifier() string {
 	return l.input[pos:l.pos]
 }
 
-func (l *Lexer) follows(s byte) bool {
-	if l.pos >= len(l.input)-1 {
+func (l *Lexer) readNumber() string {
+	pos := l.pos
+	for isDigit(l.ch) {
+		l.readChar()
+	}
+
+	return l.input[pos:l.pos]
+}
+
+func (l *Lexer) followedBy(s string) bool {
+	if l.pos >= len(l.input)-len(s) {
 		return false
 	} else {
-		return l.input[l.pos+1] == s
+		for i, ch := range s {
+			if byte(ch) != l.input[l.pos+i+1] {
+				return false
+			}
+		}
+		return true
+	}
+}
+
+func (l *Lexer) skipWhitespace() {
+	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
+		l.readChar()
 	}
 }
 
 func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
+}
+
+func isDigit(ch byte) bool {
+	return '0' <= ch && ch <= '9'
 }
