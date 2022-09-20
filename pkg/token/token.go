@@ -32,6 +32,7 @@ const (
 	RPAREN    // )
 	LBRACE    // {
 	RBRACE    // }
+	LINEBREAK // \n
 
 	// Keywords
 	FUNCTION // fn
@@ -51,14 +52,9 @@ type Token struct {
 	Literal string
 }
 
-// Helper function to create a Token
-func New(t TokenType, l byte) Token {
+// Helper function to create a Token, Literal can be a byte or a string
+func New[T byte | string](t TokenType, l T) Token {
 	return Token{Type: t, Literal: string(l)}
-}
-
-// Same as Token.new but accepts string instead of byte as Literal value
-func New2(t TokenType, l string) Token {
-	return Token{Type: t, Literal: l}
 }
 
 var keywords = map[string]TokenType{
@@ -128,6 +124,8 @@ func (t TokenType) String() string {
 		return "LBRACE"
 	case RBRACE:
 		return "RBRACE"
+	case LINEBREAK:
+		return "LINEBREAK"
 	case FUNCTION:
 		return "FUNCTION"
 	case LET:
