@@ -9,3 +9,5 @@ Nice things to add
 - arrow functions
 
 - built-in vectorization functions
+
+- tenary expressions
