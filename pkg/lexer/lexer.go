@@ -1,154 +1,144 @@
 package lexer
 
-import "github.com/qiushiyan/peach/pkg/token"
+import (
+	"io"
+	"text/scanner"
+
+	"github.com/qiushiyan/peach/pkg/token"
+)
 
 type Lexer struct {
-	input   string
-	pos     int  // current position in input (points to current char)
-	nextpos int  // current reading position in input (after current char)
-	ch      byte // current char under examination
+	s scanner.Scanner
+
+	ch rune
 }
 
-func New(input string) *Lexer {
-	lexer := &Lexer{input: input}
-	lexer.readChar()
-	return lexer
+func New(in io.Reader) *Lexer {
+	var s scanner.Scanner
+	s.Init(in)
+	s.Mode ^= scanner.ScanComments // don't skip comments
+	l := &Lexer{s: s}
+	l.readRune()
+	return l
 }
 
 func (l *Lexer) NextToken() token.Token {
-	l.skipWhitespace()
-
-	var tok token.Token
+	var t token.Token
 
 	switch l.ch {
-	// single character tokens
-	case ',':
-		tok = token.New(token.COMMA, l.ch)
-	case ';':
-		tok = token.New(token.SEMICOLON, l.ch)
 	case '=':
-		if l.followedBy([]byte{'='}) {
-			tok = token.New(token.EQ, "==")
-			l.readChar()
-		} else {
-			tok = token.New(token.ASSIGN, l.ch)
-		}
+		t = l.either('=', token.EQ, token.ASSIGN)
 	case '+':
-		tok = token.New(token.PLUS, l.ch)
+		t = l.token(token.PLUS)
 	case '-':
-		tok = token.New(token.MINUS, l.ch)
-	case '/':
-		tok = token.New(token.DIV, l.ch)
+		t = l.token(token.MINUS)
 	case '*':
-		tok = token.New(token.MUL, l.ch)
+		t = l.token(token.MUL)
+	case '/':
+		t = l.token(token.DIV)
 	case '!':
-		if l.followedBy([]byte{'='}) {
-			tok = token.New(token.NOT_EQ, "!=")
-			l.readChar()
-		} else {
-			tok = token.New(token.BANG, l.ch)
-		}
-	case '<':
-		if l.followedBy([]byte{'='}) {
-			tok = token.New(token.LTE, "<=")
-			l.readChar()
-		} else {
-			tok = token.New(token.LT, l.ch)
-		}
+		t = l.either('=', token.NOT_EQ, token.BANG)
 	case '>':
-		if l.followedBy([]byte{'='}) {
-			tok = token.New(token.GTE, ">=")
-			l.readChar()
-		} else {
-			tok = token.New(token.GT, l.ch)
-		}
-	case '(':
-		tok = token.New(token.LPAREN, l.ch)
-	case ')':
-		tok = token.New(token.RPAREN, l.ch)
-	case '}':
-		tok = token.New(token.RBRACE, l.ch)
-	case '{':
-		tok = token.New(token.LBRACE, l.ch)
-	// multi character tokens
+		t = l.either('=', token.GTE, token.GT)
+	case '<':
+		t = l.either('=', token.LTE, token.LT)
+	case '&':
+		t = l.either('&', token.AND, token.VAND)
 	case '|':
-		if l.followedBy([]byte{'>'}) {
-			tok = token.New(token.PIPE, "|>")
-			l.readChar()
-		} else {
-			tok = token.New(token.ILLEGAL, l.ch)
+		p := l.s.Pos()
+		switch l.s.Peek() {
+		case '|':
+			t.Type = token.OR
+			t.Literal = "||"
+			t.Col = p.Column + 1
+			t.Line = p.Line
+			l.readRune()
+		case '>':
+			t.Type = token.PIPE
+			t.Literal = "|>"
+			t.Col = p.Column + 1
+			t.Line = p.Line
+			l.readRune()
+		default:
+			t = l.token(token.VOR)
 		}
-	case 0:
-		tok = token.New(token.EOF, "")
+	case ';':
+		t = l.token(token.SEMICOLON)
+	case ',':
+		t = l.token(token.COMMA)
+	case '(':
+		t = l.token(token.LPAREN)
+	case ')':
+		t = l.token(token.RPAREN)
+	case '[':
+		t = l.token(token.LBRACKET)
+	case ']':
+		t = l.token(token.RBRACKET)
+	case '{':
+		t = l.token(token.LBRACE)
+	case '}':
+		t = l.token(token.RBRACE)
+	case scanner.Ident:
+		p := l.s.Pos()
+		lit := l.s.TokenText()
+		col := p.Column
+		t = token.Token{
+			Type:    token.GetIdentifierType(lit),
+			Literal: lit,
+			Line:    p.Line,
+			Col:     col,
+		}
+	case scanner.Int, scanner.Float:
+		p := l.s.Pos()
+		lit := l.s.TokenText()
+		t = token.Token{
+			Type:    token.NUMBER,
+			Literal: lit,
+			Line:    p.Line,
+			Col:     p.Column,
+		}
+	case scanner.String:
+		p := l.s.Pos()
+		lit := l.s.TokenText()
+		t = token.Token{
+			Type:    token.STRING,
+			Literal: lit[1 : len(lit)-1],
+			Line:    p.Line,
+			Col:     p.Column - 2,
+		}
+	case scanner.EOF:
+		p := l.s.Pos()
+		t = token.Token{Type: token.EOF, Literal: "", Line: p.Line, Col: p.Column}
 	default:
-		if isLetter(l.ch) {
-			literal := l.readIdentifier()
-			tok = token.New(token.GetIdentifierType(literal), literal)
-			return tok
-		} else if isDigit(l.ch) {
-			tok = token.New(token.INTEGER, l.readNumber())
-			return tok
-		} else {
-			tok = token.New(token.ILLEGAL, l.ch)
-		}
+		p := l.s.Pos()
+		lit := l.s.TokenText()
+		t = token.Token{Type: token.ERROR, Literal: lit, Line: p.Line, Col: p.Column}
 	}
 
-	l.readChar()
-	return tok
+	l.readRune()
+	return t
 }
 
-func (l *Lexer) readChar() {
+func (l *Lexer) readRune() {
+	l.ch = l.s.Scan()
+}
 
-	if l.nextpos >= len(l.input) {
-		l.ch = 0
+func (l *Lexer) token(t token.TokenType) token.Token {
+	p := l.s.Pos()
+	lit := l.s.TokenText()
+	return token.Token{Type: t, Literal: lit, Line: p.Line, Col: p.Column}
+}
+
+func (l *Lexer) either(what rune, then token.TokenType, otherwise token.TokenType) token.Token {
+	p := l.s.Pos()
+	lit := l.s.TokenText()
+	col := p.Column
+	if l.s.Peek() == what {
+		l.readRune()
+		lit += l.s.TokenText()
+		col += 1
+		return token.Token{Type: then, Literal: lit, Line: p.Line, Col: col}
 	} else {
-		l.ch = l.input[l.nextpos]
+		return token.Token{Type: otherwise, Literal: lit, Line: p.Line, Col: col}
 	}
-	l.pos = l.nextpos
-	l.nextpos += 1
-}
-
-func (l *Lexer) readIdentifier() string {
-	pos := l.pos
-	for isLetter(l.ch) {
-		l.readChar()
-	}
-
-	return l.input[pos:l.pos]
-}
-
-func (l *Lexer) readNumber() string {
-	pos := l.pos
-	for isDigit(l.ch) {
-		l.readChar()
-	}
-
-	return l.input[pos:l.pos]
-}
-
-func (l *Lexer) followedBy(chs []byte) bool {
-	if l.pos >= len(l.input)-len(chs) {
-		return false
-	} else {
-		for i, ch := range chs {
-			if ch != l.input[l.pos+i+1] {
-				return false
-			}
-		}
-		return true
-	}
-}
-
-func (l *Lexer) skipWhitespace() {
-	for l.ch == ' ' || l.ch == '\t' || l.ch == '\r' || l.ch == '\n' { // line break is skipped for now
-		l.readChar()
-	}
-}
-
-func isLetter(ch byte) bool {
-	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
-}
-
-func isDigit(ch byte) bool {
-	return '0' <= ch && ch <= '9'
 }

@@ -1,6 +1,8 @@
 package lexer
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/qiushiyan/peach/pkg/token"
@@ -14,7 +16,7 @@ func TestNextToken(t *testing.T) {
 		 x + y;
 	};
 	let result = five |> add(ten);
-	!-/*5;
+	!-/*5||&;
 	5 < 10 > 5;
 	if (5 < 10) {
 		return true;
@@ -31,12 +33,12 @@ func TestNextToken(t *testing.T) {
 		{token.LET, "let"},
 		{token.IDENTIFIER, "five"},
 		{token.ASSIGN, "="},
-		{token.INTEGER, "5"},
+		{token.NUMBER, "5"},
 		{token.SEMICOLON, ";"},
 		{token.LET, "let"},
 		{token.IDENTIFIER, "ten"},
 		{token.ASSIGN, "="},
-		{token.INTEGER, "10"},
+		{token.NUMBER, "10"},
 		{token.SEMICOLON, ";"},
 		{token.LET, "let"},
 		{token.IDENTIFIER, "add"},
@@ -68,19 +70,21 @@ func TestNextToken(t *testing.T) {
 		{token.MINUS, "-"},
 		{token.DIV, "/"},
 		{token.MUL, "*"},
-		{token.INTEGER, "5"},
+		{token.NUMBER, "5"},
+		{token.OR, "||"},
+		{token.VAND, "&"},
 		{token.SEMICOLON, ";"},
-		{token.INTEGER, "5"},
+		{token.NUMBER, "5"},
 		{token.LT, "<"},
-		{token.INTEGER, "10"},
+		{token.NUMBER, "10"},
 		{token.GT, ">"},
-		{token.INTEGER, "5"},
+		{token.NUMBER, "5"},
 		{token.SEMICOLON, ";"},
 		{token.IF, "if"},
 		{token.LPAREN, "("},
-		{token.INTEGER, "5"},
+		{token.NUMBER, "5"},
 		{token.LT, "<"},
-		{token.INTEGER, "10"},
+		{token.NUMBER, "10"},
 		{token.RPAREN, ")"},
 		{token.LBRACE, "{"},
 		{token.RETURN, "return"},
@@ -93,20 +97,21 @@ func TestNextToken(t *testing.T) {
 		{token.FALSE, "false"},
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
-		{token.INTEGER, "10"},
+		{token.NUMBER, "10"},
 		{token.EQ, "=="},
-		{token.INTEGER, "10"},
+		{token.NUMBER, "10"},
 		{token.SEMICOLON, ";"},
-		{token.INTEGER, "10"},
+		{token.NUMBER, "10"},
 		{token.NOT_EQ, "!="},
-		{token.INTEGER, "9"},
+		{token.NUMBER, "9"},
 		{token.SEMICOLON, ";"},
 		{token.EOF, ""},
 	}
 
-	lexer := New(input)
+	lexer := New(strings.NewReader(input))
 
 	for i, test := range tests {
+		fmt.Println(test.expectedType, test.expectedLiteral, i, lexer.ch)
 		tok := lexer.NextToken()
 		if tok.Type != test.expectedType {
 			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q", i, test.expectedType, tok.Type)

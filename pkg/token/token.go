@@ -1,14 +1,15 @@
 package token
 
 const (
-	ILLEGAL TokenType = iota
+	ERROR TokenType = iota
 	EOF
 
 	// Identifiers
 	IDENTIFIER // variable names: x, y, add, foobar
 
 	// literals
-	INTEGER
+	NUMBER
+	STRING
 
 	// Operators
 	ASSIGN // =
@@ -24,12 +25,18 @@ const (
 	LTE    // <=
 	EQ     // ==
 	NOT_EQ // !=
+	OR     // ||
+	VOR    // |
+	AND    // &&
+	VAND   // &
 
 	// Delimiters
 	COMMA     // ,
 	SEMICOLON // ;
 	LPAREN    // (
 	RPAREN    // )
+	LBRACKET  // [
+	RBRACKET  // ]
 	LBRACE    // {
 	RBRACE    // }
 	LINEBREAK // \n
@@ -50,10 +57,12 @@ type TokenType byte
 type Token struct {
 	Type    TokenType
 	Literal string
+	Col     int
+	Line    int
 }
 
 // Helper function to create a Token, Literal can be a byte or a string
-func New[T byte | string](t TokenType, l T) Token {
+func New[T byte | []byte](t TokenType, l T) Token {
 	return Token{Type: t, Literal: string(l)}
 }
 
@@ -78,14 +87,14 @@ func GetIdentifierType(k string) TokenType {
 // for debugging purposes
 func (t TokenType) String() string {
 	switch t {
-	case ILLEGAL:
-		return "ILLEGAL"
 	case EOF:
 		return "EOF"
 	case IDENTIFIER:
 		return "IDENTIFIER"
-	case INTEGER:
-		return "INTEGER"
+	case NUMBER:
+		return "NUMBER"
+	case STRING:
+		return "STRING"
 	case ASSIGN:
 		return "ASSIGN"
 	case PIPE:
@@ -112,6 +121,14 @@ func (t TokenType) String() string {
 		return "EQ"
 	case NOT_EQ:
 		return "NOT_EQ"
+	case OR:
+		return "OR"
+	case VOR:
+		return "VOR"
+	case AND:
+		return "AND"
+	case VAND:
+		return "VAND"
 	case COMMA:
 		return "COMMA"
 	case SEMICOLON:
@@ -120,6 +137,10 @@ func (t TokenType) String() string {
 		return "LPAREN"
 	case RPAREN:
 		return "RPAREN"
+	case LBRACKET:
+		return "LBRACKET"
+	case RBRACKET:
+		return "RBRACKET"
 	case LBRACE:
 		return "LBRACE"
 	case RBRACE:

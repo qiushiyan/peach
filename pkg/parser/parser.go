@@ -41,7 +41,10 @@ func (p *Parser) registerInfix(tokenType token.TokenType, fn infixParseFn) {
 }
 
 func New(l *lexer.Lexer) *Parser {
-	p := &Parser{l: l, errors: []string{}}
+
+	p := &Parser{l: l, errors: []string{}, prefixParseFns: make(map[token.TokenType]prefixParseFn), infixParseFns: make(map[token.TokenType]infixParseFn)}
+
+	p.registerPrefix(token.IDENTIFIER, p.parseIdentifier)
 
 	// Read two tokens, so curToken and nextToken are both set
 	p.advancedToken()
@@ -86,50 +89,6 @@ func (p *Parser) parseStatement() ast.Statement {
 	default:
 		return p.parseExpressionStatement()
 	}
-}
-
-func (p *Parser) parseLetStatement() *ast.LetStatement {
-	statement := &ast.LetStatement{Token: p.curToken}
-
-	if !p.expectNextToken(token.IDENTIFIER) {
-		return nil
-	}
-
-	statement.Name = &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
-
-	if !p.expectNextToken(token.ASSIGN) {
-		return nil
-	}
-
-	p.advancedToken()
-	for !p.endOfExpression() {
-		p.advancedToken()
-	}
-
-	return statement
-}
-
-func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
-	statement := &ast.ReturnStatement{Token: p.curToken}
-	p.advancedToken()
-
-	for !p.endOfExpression() {
-		p.advancedToken()
-	}
-
-	return statement
-}
-
-func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
-	statement := &ast.ExpressionStatement{Token: p.curToken}
-
-	p.advancedToken()
-
-	for !p.endOfExpression() {
-		p.advancedToken()
-	}
-
-	return statement
 }
 
 func (p *Parser) curTokenIs(t token.TokenType) bool {
