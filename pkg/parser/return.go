@@ -4,10 +4,10 @@ import "github.com/qiushiyan/peach/pkg/ast"
 
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	statement := &ast.ReturnStatement{Token: p.curToken}
-	p.advancedToken()
+	p.advanceToken()
 
 	for !p.endOfExpression() {
-		p.advancedToken()
+		p.advanceToken()
 	}
 
 	return statement

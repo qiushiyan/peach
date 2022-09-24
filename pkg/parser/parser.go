@@ -11,11 +11,12 @@ import (
 const (
 	_ int = iota
 	LOWEST
-	EQUALS  // == LESSGREATER >, >=, <, <=
-	SUM     // +
-	PRODUCT // *
-	PREFIX  // -X or !X
-	CALL    // myFunction(X)
+	EQUALS      // ==
+	LESSGREATER // >, >=, <, <=
+	SUM         // +
+	PRODUCT     // *
+	PREFIX      // -X or !X
+	CALL        // myFunction(X)
 )
 
 type (
@@ -41,14 +42,18 @@ func (p *Parser) registerInfix(tokenType token.TokenType, fn infixParseFn) {
 }
 
 func New(l *lexer.Lexer) *Parser {
+	p := &Parser{
+		l:              l,
+		errors:         []string{},
+		prefixParseFns: make(map[token.TokenType]prefixParseFn),
+		infixParseFns:  make(map[token.TokenType]infixParseFn),
+	}
 
-	p := &Parser{l: l, errors: []string{}, prefixParseFns: make(map[token.TokenType]prefixParseFn), infixParseFns: make(map[token.TokenType]infixParseFn)}
-
-	p.registerPrefix(token.IDENTIFIER, p.parseIdentifier)
-
+	p.registerAllPrefixes()
+	p.registerAllInfixes()
 	// Read two tokens, so curToken and nextToken are both set
-	p.advancedToken()
-	p.advancedToken()
+	p.advanceToken()
+	p.advanceToken()
 
 	return p
 }
@@ -57,7 +62,7 @@ func (p *Parser) Errors() []string {
 	return p.errors
 }
 
-func (p *Parser) advancedToken() {
+func (p *Parser) advanceToken() {
 	p.curToken = p.nextToken
 	p.nextToken = p.l.NextToken()
 }
@@ -75,7 +80,7 @@ func (p *Parser) ParseProgram() *ast.Program {
 		if statement != nil {
 			program.Statements = append(program.Statements, statement)
 		}
-		p.advancedToken()
+		p.advanceToken()
 	}
 	return program
 }
@@ -100,7 +105,7 @@ func (p *Parser) nextTokenIs(t token.TokenType) bool {
 
 func (p *Parser) expectNextToken(t token.TokenType) bool {
 	if p.nextTokenIs(t) {
-		p.advancedToken()
+		p.advanceToken()
 		return true
 	} else {
 		p.nextTokenError(t)

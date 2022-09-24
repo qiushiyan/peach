@@ -18,9 +18,9 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 		return nil
 	}
 
-	p.advancedToken()
+	p.advanceToken()
 	for !p.endOfExpression() {
-		p.advancedToken()
+		p.advanceToken()
 	}
 
 	return statement
