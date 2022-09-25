@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"strings"
 	"testing"
 
@@ -45,22 +44,4 @@ func TestParsingPrefixExpressions(t *testing.T) {
 			}
 		}
 	}
-}
-
-func testNumberLiteral(t *testing.T, nl ast.Expression, value float64) bool {
-	number, ok := nl.(*ast.NumberLiteral)
-	if !ok {
-		t.Errorf("il not *ast.IntegerLiteral. got=%T", nl)
-		return false
-	}
-	if number.Value != value {
-		t.Errorf("number.Value not %f. got=%f", value, number.Value)
-		return false
-	}
-	if number.TokenLiteral() != fmt.Sprintf("%f", value) {
-		t.Errorf("integ.TokenLiteral not %f. got=%s", value,
-			number.TokenLiteral())
-		return false
-	}
-	return true
 }

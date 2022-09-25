@@ -10,7 +10,6 @@ import (
 func (p *Parser) parseExpressionStatement() ast.Statement {
 	statement := &ast.ExpressionStatement{Token: p.curToken}
 	statement.Expression = p.parseExpression(LOWEST)
-	p.advanceToken()
 
 	if p.endOfExpression() {
 		p.advanceToken()

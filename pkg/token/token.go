@@ -39,7 +39,7 @@ const (
 	RBRACKET  // ]
 	LBRACE    // {
 	RBRACE    // }
-	LINEBREAK // \n
+	NEWLINE   // \n
 
 	// Keywords
 	FUNCTION // fn
@@ -61,7 +61,7 @@ type Token struct {
 	Line    int
 }
 
-// Helper function to create a Token, Literal can be a byte or a string
+// Helper to create a Token, Literal can be a byte or a string
 func New[T byte | []byte](t TokenType, l T) Token {
 	return Token{Type: t, Literal: string(l)}
 }
@@ -145,8 +145,8 @@ func (t TokenType) String() string {
 		return "LBRACE"
 	case RBRACE:
 		return "RBRACE"
-	case LINEBREAK:
-		return "LINEBREAK"
+	case NEWLINE:
+		return "NEWLINE"
 	case FUNCTION:
 		return "FUNCTION"
 	case LET:

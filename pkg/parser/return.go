@@ -6,9 +6,7 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	statement := &ast.ReturnStatement{Token: p.curToken}
 	p.advanceToken()
 
-	for !p.endOfExpression() {
-		p.advanceToken()
-	}
+	statement.Value = p.parseExpression(LOWEST)
 
 	return statement
 }

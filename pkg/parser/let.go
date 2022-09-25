@@ -19,7 +19,8 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	}
 
 	p.advanceToken()
-	for !p.endOfExpression() {
+	statement.Value = p.parseExpression(LOWEST)
+	if p.endOfExpression() {
 		p.advanceToken()
 	}
 

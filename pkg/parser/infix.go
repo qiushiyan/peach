@@ -9,11 +9,15 @@ var precedences = map[token.TokenType]int{
 	token.EQ:     EQUALS,
 	token.NOT_EQ: EQUALS,
 	token.LT:     LESSGREATER,
+	token.LTE:    LESSGREATER,
 	token.GT:     LESSGREATER,
+	token.GTE:    LESSGREATER,
 	token.PLUS:   SUM,
 	token.MINUS:  SUM,
 	token.DIV:    PRODUCT,
 	token.MUL:    PRODUCT,
+	token.PIPE:   PIPE,
+	token.LPAREN: CALL,
 }
 
 func (p *Parser) registerAllInfixes() {
@@ -33,6 +37,8 @@ func (p *Parser) registerAllInfixes() {
 	p.registerInfix(token.VOR, p.parseInfixExpression)
 	p.registerInfix(token.AND, p.parseInfixExpression)
 	p.registerInfix(token.VAND, p.parseInfixExpression)
+	// function call
+	p.registerInfix(token.LPAREN, p.parseCallExpression)
 }
 
 func (p *Parser) peekPrecedence() int {

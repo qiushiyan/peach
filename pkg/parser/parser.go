@@ -15,6 +15,7 @@ const (
 	LESSGREATER // >, >=, <, <=
 	SUM         // +
 	PRODUCT     // *
+	PIPE        // |>
 	PREFIX      // -X or !X
 	CALL        // myFunction(X)
 )
@@ -68,7 +69,7 @@ func (p *Parser) advanceToken() {
 }
 
 func (p *Parser) nextTokenError(t token.TokenType) {
-	msg := fmt.Sprintf("expected next token to be %s, got %s instead",
+	msg := fmt.Sprintf("expect next token to be %s, got %s instead",
 		t, p.nextToken.Type)
 	p.errors = append(p.errors, msg)
 }
@@ -114,5 +115,5 @@ func (p *Parser) expectNextToken(t token.TokenType) bool {
 }
 
 func (p *Parser) endOfExpression() bool {
-	return p.curTokenIs(token.SEMICOLON) || p.curTokenIs(token.LINEBREAK) || p.curTokenIs(token.EOF)
+	return p.nextTokenIs(token.SEMICOLON) || p.nextTokenIs(token.NEWLINE)
 }

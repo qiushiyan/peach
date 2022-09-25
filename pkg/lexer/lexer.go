@@ -17,6 +17,7 @@ func New(in io.Reader) *Lexer {
 	var s scanner.Scanner
 	s.Init(in)
 	s.Mode ^= scanner.ScanComments // don't skip comments
+	s.Whitespace ^= 1 << '\n'      // don't skip tabs and new lines
 	l := &Lexer{s: s}
 	l.readRune()
 	return l
@@ -78,6 +79,8 @@ func (l *Lexer) NextToken() token.Token {
 		t = l.token(token.LBRACE)
 	case '}':
 		t = l.token(token.RBRACE)
+	case '\n':
+		t = l.token(token.NEWLINE)
 	case scanner.Ident:
 		p := l.s.Pos()
 		lit := l.s.TokenText()
