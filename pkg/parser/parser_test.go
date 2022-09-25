@@ -77,6 +77,8 @@ func testBooleanLiteral(t *testing.T, exp ast.Expression, value bool) bool {
 
 func testLiteralExpression(t *testing.T, exp ast.Expression, expected interface{}) bool {
 	switch v := expected.(type) {
+	case int:
+		return testNumberLiteral(t, exp, float64(v))
 	case float64:
 		return testNumberLiteral(t, exp, v)
 	case string:
