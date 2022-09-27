@@ -15,19 +15,24 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	if !p.expectNextToken(token.RPAREN) {
 		return nil
 	}
-	expr.Consequence = p.parseBlockStatement()
-
+	expr.Consequence = p.parseIfBranch()
 	if p.nextTokenIs(token.ELSE) {
 		p.advanceToken()
-		expr.Alternative = p.parseBlockStatement()
+		expr.Alternative = p.parseIfBranch()
 	}
 
 	return expr
 }
 
-func (p *Parser) parseIfBranch() ast.Statement {
-	if !p.expectNextToken(token.LBRACE) {
-		return nil
+func (p *Parser) parseIfBranch() *ast.BlockStatement {
+	// jump to the next token after ) or ELSE
+	p.advanceToken()
+	if p.curTokenIs(token.LBRACE) {
+		return p.parseBlockStatement()
+	} else {
+		return &ast.BlockStatement{
+			Token:      token.Token{Type: token.LBRACE, Literal: "{", Col: p.curToken.Col, Line: p.curToken.Line},
+			Statements: []ast.Statement{p.parseExpressionStatement()},
+		}
 	}
-	return p.parseBlockStatement()
 }
