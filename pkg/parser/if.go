@@ -15,18 +15,19 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	if !p.expectNextToken(token.RPAREN) {
 		return nil
 	}
-	if !p.expectNextToken(token.LBRACE) {
-		return nil
-	}
 	expr.Consequence = p.parseBlockStatement()
 
 	if p.nextTokenIs(token.ELSE) {
 		p.advanceToken()
-		if !p.expectNextToken(token.LBRACE) {
-			return nil
-		}
 		expr.Alternative = p.parseBlockStatement()
 	}
 
 	return expr
+}
+
+func (p *Parser) parseIfBranch() ast.Statement {
+	if !p.expectNextToken(token.LBRACE) {
+		return nil
+	}
+	return p.parseBlockStatement()
 }
