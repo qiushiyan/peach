@@ -20,15 +20,15 @@ func TestNumberLiteralExpression(t *testing.T) {
 		t.Fatalf("program has not enough statements. got=%d",
 			len(program.Statements))
 	}
-	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	statement, ok := program.Statements[0].(*ast.ExpressionStatement)
 	if !ok {
 		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T",
 			program.Statements[0])
 	}
 
-	literal, ok := stmt.Expression.(*ast.NumberLiteral)
+	literal, ok := statement.Expression.(*ast.NumberLiteral)
 	if !ok {
-		t.Fatalf("exp not *ast.NumberLiteral. got=%T", stmt.Expression)
+		t.Fatalf("exp not *ast.NumberLiteral. got=%T", statement.Expression)
 	}
 	if literal.Value != 5.0 {
 		t.Errorf("literal.Value not %v. got=%v", 5.0, literal.Value)
