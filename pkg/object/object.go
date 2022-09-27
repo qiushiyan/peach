@@ -1,10 +1,10 @@
 package object
 
 const (
-	NUMBER_OBJ = "NUMBER"
-	STRING_OBJ = "STRING"
-	BOOL_OBJ   = "BOOL"
-	NULL_OBJ   = "NULL"
+	NUMBER_OBJ  = "NUMBER"
+	STRING_OBJ  = "STRING"
+	BOOLEAN_OBJ = "BOOLEAN"
+	NULL_OBJ    = "NULL"
 )
 
 type ObjectType string

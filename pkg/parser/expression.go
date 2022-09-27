@@ -14,7 +14,6 @@ func (p *Parser) parseExpressionStatement() ast.Statement {
 	if p.endOfExpression() {
 		p.advanceToken()
 	}
-
 	return statement
 }
 
@@ -36,6 +35,7 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 	}
 
 	return leftExp
+
 }
 
 func (p *Parser) noPrefixParseFnError(t token.TokenType) {

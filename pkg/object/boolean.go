@@ -8,5 +8,5 @@ type Boolean struct {
 
 func (b *Boolean) Inspect() string { return fmt.Sprintf("%t", b.Value) }
 func (b *Boolean) Type() ObjectType {
-	return BOOL_OBJ
+	return BOOLEAN_OBJ
 }
