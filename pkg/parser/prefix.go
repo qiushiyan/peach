@@ -18,10 +18,12 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 func (p *Parser) registerAllPrefixes() {
 	p.registerPrefix(token.IDENTIFIER, p.parseIdentifier)
 	p.registerPrefix(token.NUMBER, p.parseNumberLiteral)
+	p.registerPrefix(token.STRING, p.parseStringLiteral)
 	p.registerPrefix(token.BANG, p.parsePrefixExpression)
 	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
 	p.registerPrefix(token.TRUE, p.parseBoolean)
 	p.registerPrefix(token.FALSE, p.parseBoolean)
+	p.registerPrefix(token.NULL, p.parseNull)
 	p.registerPrefix(token.LPAREN, p.parseGroupedExpression)
 	p.registerPrefix(token.IF, p.parseIfExpression)
 	p.registerPrefix(token.FUNCTION, p.parseFunction)

@@ -48,6 +48,7 @@ const (
 	ELSE     // else
 	TRUE     // true
 	FALSE    // false
+	NULL     // null
 	RETURN   // return
 	FOR      // for
 )
@@ -61,11 +62,6 @@ type Token struct {
 	Line    int
 }
 
-// Helper to create a Token, Literal can be a byte or a string
-func New[T byte | []byte](t TokenType, l T) Token {
-	return Token{Type: t, Literal: string(l)}
-}
-
 var keywords = map[string]TokenType{
 	"fn":     FUNCTION,
 	"let":    LET,
@@ -73,6 +69,7 @@ var keywords = map[string]TokenType{
 	"else":   ELSE,
 	"true":   TRUE,
 	"false":  FALSE,
+	"null":   NULL,
 	"return": RETURN,
 	"for":    FOR,
 }
@@ -159,6 +156,8 @@ func (t TokenType) String() string {
 		return "TRUE"
 	case FALSE:
 		return "FALSE"
+	case NULL:
+		return "NULL"
 	case RETURN:
 		return "RETURN"
 	case FOR:
