@@ -11,7 +11,9 @@ import (
 	"github.com/qiushiyan/qlang/pkg/parser"
 )
 
-const PROMPT = "\U0000279C  "
+const (
+	PROMPT = "\U0000279C  "
+)
 
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)

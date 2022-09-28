@@ -9,6 +9,9 @@ func evalBlockStatement(node *ast.BlockStatement) object.Object {
 	var result object.Object
 	for _, statement := range node.Statements {
 		result = Eval(statement)
+		if isError(result) {
+			return result
+		}
 		if result != nil && result.Type() == object.RETURN_OBJ {
 			return result
 		}
