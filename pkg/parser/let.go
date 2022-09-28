@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"github.com/qiushiyan/peach/pkg/ast"
-	"github.com/qiushiyan/peach/pkg/token"
+	"github.com/qiushiyan/qlang/pkg/ast"
+	"github.com/qiushiyan/qlang/pkg/token"
 )
 
 func (p *Parser) parseLetStatement() *ast.LetStatement {

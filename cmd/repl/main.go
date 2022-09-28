@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/user"
 
-	"github.com/qiushiyan/peach/pkg/repl"
+	"github.com/qiushiyan/qlang/pkg/repl"
 )
 
 func main() {
@@ -13,7 +13,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("Hello %s! Welcome to the Peach 🍑 programming language!\n",
+	fmt.Printf("Hello %s! Welcome to the Q language!\n",
 		user.Username)
 	repl.Start(os.Stdin, os.Stdout)
 }

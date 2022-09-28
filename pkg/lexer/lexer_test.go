@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/qiushiyan/peach/pkg/token"
+	"github.com/qiushiyan/qlang/pkg/token"
 )
 
 func TestNextToken(t *testing.T) {

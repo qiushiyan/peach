@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"strings"
 
-	"github.com/qiushiyan/peach/pkg/token"
+	"github.com/qiushiyan/qlang/pkg/token"
 )
 
 type FunctionLiteral struct {

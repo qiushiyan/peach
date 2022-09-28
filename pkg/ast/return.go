@@ -3,20 +3,13 @@ package ast
 import (
 	"bytes"
 
-	"github.com/qiushiyan/peach/pkg/token"
+	"github.com/qiushiyan/qlang/pkg/token"
 )
 
 // statement node for `return <expression>`
 type ReturnStatement struct {
 	Token token.Token
 	Value Expression
-}
-
-func NewReturnStatement(ReturnValue Expression) ReturnStatement {
-	return ReturnStatement{
-		Token: token.Token{Type: token.RETURN, Literal: "RETURN"},
-		Value: ReturnValue,
-	}
 }
 
 func (rs *ReturnStatement) statementNode()       {}

@@ -4,7 +4,7 @@ import (
 	"io"
 	"text/scanner"
 
-	"github.com/qiushiyan/peach/pkg/token"
+	"github.com/qiushiyan/qlang/pkg/token"
 )
 
 type Lexer struct {

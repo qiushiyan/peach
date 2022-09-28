@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/qiushiyan/peach/pkg/ast"
+	"github.com/qiushiyan/qlang/pkg/ast"
 )
 
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {

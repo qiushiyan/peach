@@ -3,7 +3,7 @@ package eval
 import (
 	"testing"
 
-	"github.com/qiushiyan/peach/pkg/object"
+	"github.com/qiushiyan/qlang/pkg/object"
 )
 
 func TestEvalIntegerExpression(t *testing.T) {

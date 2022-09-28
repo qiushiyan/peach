@@ -1,6 +1,6 @@
 package ast
 
-import "github.com/qiushiyan/peach/pkg/token"
+import "github.com/qiushiyan/qlang/pkg/token"
 
 type Null struct {
 	Token token.Token

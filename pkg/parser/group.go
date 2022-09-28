@@ -1,9 +1,9 @@
 package parser
 
 import (
-	"github.com/qiushiyan/peach/pkg/token"
+	"github.com/qiushiyan/qlang/pkg/token"
 
-	"github.com/qiushiyan/peach/pkg/ast"
+	"github.com/qiushiyan/qlang/pkg/ast"
 )
 
 func (p *Parser) parseGroupedExpression() ast.Expression {

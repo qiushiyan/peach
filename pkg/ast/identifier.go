@@ -1,6 +1,6 @@
 package ast
 
-import "github.com/qiushiyan/peach/pkg/token"
+import "github.com/qiushiyan/qlang/pkg/token"
 
 // expression node for identifier itself
 type Identifier struct {

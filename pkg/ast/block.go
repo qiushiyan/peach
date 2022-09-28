@@ -3,7 +3,7 @@ package ast
 import (
 	"bytes"
 
-	"github.com/qiushiyan/peach/pkg/token"
+	"github.com/qiushiyan/qlang/pkg/token"
 )
 
 type BlockStatement struct {

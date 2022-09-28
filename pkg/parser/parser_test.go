@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/qiushiyan/peach/pkg/ast"
+	"github.com/qiushiyan/qlang/pkg/ast"
 )
 
 func checkParserErrors(t *testing.T, p *Parser) {

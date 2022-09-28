@@ -3,10 +3,10 @@ package eval
 import (
 	"strings"
 
-	"github.com/qiushiyan/peach/pkg/ast"
-	"github.com/qiushiyan/peach/pkg/lexer"
-	"github.com/qiushiyan/peach/pkg/object"
-	"github.com/qiushiyan/peach/pkg/parser"
+	"github.com/qiushiyan/qlang/pkg/ast"
+	"github.com/qiushiyan/qlang/pkg/lexer"
+	"github.com/qiushiyan/qlang/pkg/object"
+	"github.com/qiushiyan/qlang/pkg/parser"
 )
 
 var (
@@ -18,7 +18,7 @@ var (
 func Eval(node ast.Node) object.Object {
 	switch node := node.(type) {
 	case *ast.Program:
-		return evalStatements(node.Statements)
+		return evalProgram(node)
 	case *ast.ExpressionStatement:
 		return Eval(node.Expression)
 	case *ast.NumberLiteral:
@@ -29,6 +29,8 @@ func Eval(node ast.Node) object.Object {
 		return evalBoolean(node.Value)
 	case *ast.Null:
 		return evalNull()
+	case *ast.ReturnStatement:
+		return evalReturnStatement(node)
 	case *ast.PrefixExpression:
 		right := Eval(node.Right)
 		return evalPrefixExpression(node.Operator, right)
@@ -39,17 +41,21 @@ func Eval(node ast.Node) object.Object {
 	case *ast.IfExpression:
 		return evalIfExpression(node)
 	case *ast.BlockStatement:
-		return evalStatements(node.Statements)
+		return evalBlockStatement(node)
 	}
 
 	return nil
 }
 
-func evalStatements(statements []ast.Statement) object.Object {
+func evalProgram(program *ast.Program) object.Object {
 	var result object.Object
 
-	for _, statement := range statements {
+	for _, statement := range program.Statements {
 		result = Eval(statement)
+
+		if returnValue, ok := result.(*object.ReturnValue); ok {
+			return returnValue.Value
+		}
 	}
 
 	return result

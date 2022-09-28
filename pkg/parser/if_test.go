@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/qiushiyan/peach/pkg/ast"
-	"github.com/qiushiyan/peach/pkg/lexer"
+	"github.com/qiushiyan/qlang/pkg/ast"
+	"github.com/qiushiyan/qlang/pkg/lexer"
 )
 
 func TestIfExpression(t *testing.T) {

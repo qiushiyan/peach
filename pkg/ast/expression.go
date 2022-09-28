@@ -1,6 +1,6 @@
 package ast
 
-import "github.com/qiushiyan/peach/pkg/token"
+import "github.com/qiushiyan/qlang/pkg/token"
 
 // Statement node for an expression, e.g. x + 5;
 type ExpressionStatement struct {

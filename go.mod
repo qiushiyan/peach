@@ -1,3 +1,3 @@
-module github.com/qiushiyan/peach
+module github.com/qiushiyan/qlang
 
 go 1.19

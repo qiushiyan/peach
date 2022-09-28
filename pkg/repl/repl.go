@@ -6,9 +6,9 @@ import (
 	"io"
 	"strings"
 
-	"github.com/qiushiyan/peach/pkg/eval"
-	"github.com/qiushiyan/peach/pkg/lexer"
-	"github.com/qiushiyan/peach/pkg/parser"
+	"github.com/qiushiyan/qlang/pkg/eval"
+	"github.com/qiushiyan/qlang/pkg/lexer"
+	"github.com/qiushiyan/qlang/pkg/parser"
 )
 
 const PROMPT = "\U0000279C  "
