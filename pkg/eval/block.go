@@ -5,10 +5,10 @@ import (
 	"github.com/qiushiyan/qlang/pkg/object"
 )
 
-func evalBlockStatement(node *ast.BlockStatement) object.Object {
+func evalBlockStatement(node *ast.BlockStatement, env *object.Env) object.Object {
 	var result object.Object
 	for _, statement := range node.Statements {
-		result = Eval(statement)
+		result = Eval(statement, env)
 		if isError(result) {
 			return result
 		}

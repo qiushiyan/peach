@@ -5,8 +5,8 @@ import (
 	"github.com/qiushiyan/qlang/pkg/object"
 )
 
-func evalReturnStatement(node *ast.ReturnStatement) object.Object {
-	val := Eval(node.Value)
+func evalReturnStatement(node *ast.ReturnStatement, env *object.Env) object.Object {
+	val := Eval(node.Value, env)
 	if isError(val) {
 		return val
 	}

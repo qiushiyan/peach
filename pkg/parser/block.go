@@ -20,8 +20,33 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 		p.advanceToken()
 	}
 	if !p.curTokenIs(token.RBRACE) {
-		p.errors = append(p.errors, fmt.Sprintf("unclosed block, missing '}' at %d:%d", p.curToken.Line, p.curToken.Col))
+		p.unclosedBlockError()
 		return nil
 	}
 	return block
+}
+
+// parse a one-liner block statement without {}
+// used by function and if/else expressions
+// fn(x) x + 1
+// if(x > 0) x + 1 else x - 1
+func (p *Parser) parseOnelineBlockStatement() *ast.BlockStatement {
+	if p.curTokenIs(token.NEWLINE) || p.curTokenIs(token.SEMICOLON) || p.curTokenIs(token.EOF) {
+		p.errors = append(p.errors, fmt.Sprintf("incomplete statement at %d:%d", p.curToken.Line, p.curToken.Col))
+		return nil
+	}
+
+	return &ast.BlockStatement{
+		Token: token.Token{
+			Type:    token.LBRACE,
+			Literal: "{",
+			Line:    p.curToken.Line,
+			Col:     p.curToken.Col,
+		},
+		Statements: []ast.Statement{p.parseStatement()},
+	}
+}
+
+func (p *Parser) unclosedBlockError() {
+	p.errors = append(p.errors, fmt.Sprintf("unclosed block, missing '}' at %d:%d", p.curToken.Line, p.curToken.Col))
 }

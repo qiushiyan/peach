@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"fmt"
+
 	"github.com/qiushiyan/qlang/pkg/token"
 
 	"github.com/qiushiyan/qlang/pkg/ast"
@@ -12,10 +14,34 @@ func (p *Parser) parseFunction() ast.Expression {
 		return nil
 	}
 	fn.Parameters = p.parseFunctionParameters()
-	if !p.expectNextToken(token.LBRACE) {
-		return nil
+	p.advanceToken()
+	if p.curTokenIs(token.LBRACE) {
+		fn.Body = p.parseBlockStatement()
+	} else {
+		fn.Body = p.parseOnelineBlockStatement()
 	}
-	fn.Body = p.parseBlockStatement()
+
+	// make the last line of the function body the return value (if not already a return statement)
+	if len(fn.Body.Statements) > 0 {
+		lastStatement := fn.Body.Statements[len(fn.Body.Statements)-1]
+		if _, ok := lastStatement.(*ast.ReturnStatement); !ok {
+			lastExpression, ok := lastStatement.(*ast.ExpressionStatement)
+			if ok {
+				fn.Body.Statements[len(fn.Body.Statements)-1] = &ast.ReturnStatement{
+					Token: token.Token{
+						Type:    token.RETURN,
+						Literal: "return",
+						Line:    lastExpression.Token.Line,
+						Col:     lastExpression.Token.Col},
+					Value: lastExpression.Expression,
+				}
+			} else {
+				p.errors = append(p.errors, fmt.Sprintf("can't convert last line of function body to return statement %d:%d", p.curToken.Line, p.curToken.Col))
+			}
+
+		}
+	}
+
 	return fn
 }
 

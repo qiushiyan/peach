@@ -30,9 +30,6 @@ func (p *Parser) parseIfBranch() *ast.BlockStatement {
 	if p.curTokenIs(token.LBRACE) {
 		return p.parseBlockStatement()
 	} else {
-		return &ast.BlockStatement{
-			Token:      token.Token{Type: token.LBRACE, Literal: "{", Col: p.curToken.Col, Line: p.curToken.Line},
-			Statements: []ast.Statement{p.parseExpressionStatement()},
-		}
+		return p.parseOnelineBlockStatement()
 	}
 }
