@@ -2,11 +2,18 @@ package object
 
 func NewEnv() *Env {
 	s := make(map[string]Object)
-	return &Env{store: s}
+	return &Env{store: s, outer: nil}
+}
+
+func NewEnclosedEnvironment(outer *Env) *Env {
+	env := NewEnv()
+	env.outer = outer
+	return env
 }
 
 type Env struct {
 	store map[string]Object
+	outer *Env
 }
 
 func (e *Env) Get(name string) (Object, bool) {
