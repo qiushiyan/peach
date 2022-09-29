@@ -23,6 +23,7 @@ func TestNextToken(t *testing.T) {
 		return false;
 	}
 	10 == 10; 10 != 9;
+	[1, 2, 3];
 	`
 
 	tests := []struct {
@@ -116,6 +117,15 @@ func TestNextToken(t *testing.T) {
 		{token.NUMBER, "10"},
 		{token.NOT_EQ, "!="},
 		{token.NUMBER, "9"},
+		{token.SEMICOLON, ";"},
+		{token.NEWLINE, "\n"},
+		{token.LBRACKET, "["},
+		{token.NUMBER, "1"},
+		{token.COMMA, ","},
+		{token.NUMBER, "2"},
+		{token.COMMA, ","},
+		{token.NUMBER, "3"},
+		{token.RBRACKET, "]"},
 		{token.SEMICOLON, ";"},
 		{token.NEWLINE, "\n"},
 		{token.EOF, ""},

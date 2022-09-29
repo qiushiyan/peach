@@ -19,5 +19,8 @@ func (p *Parser) parseAssignStatement() ast.Statement {
 	p.advanceToken()
 	p.advanceToken()
 	statement.Value = p.parseExpression(LOWEST)
+	if p.endOfExpression() {
+		p.advanceToken()
+	}
 	return statement
 }

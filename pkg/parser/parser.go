@@ -18,6 +18,7 @@ const (
 	PIPE        // |>
 	PREFIX      // -X or !X
 	CALL        // myFunction(X)
+	INDEX       // Vector[index]
 )
 
 type (

@@ -63,10 +63,12 @@ func (l *Lexer) NextToken() token.Token {
 		default:
 			t = l.token(token.VOR)
 		}
-	case ';':
-		t = l.token(token.SEMICOLON)
 	case ',':
 		t = l.token(token.COMMA)
+	case ':':
+		t = l.token(token.COLON)
+	case ';':
+		t = l.token(token.SEMICOLON)
 	case '(':
 		t = l.token(token.LPAREN)
 	case ')':

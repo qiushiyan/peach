@@ -11,7 +11,7 @@ func evalCallExpression(node *ast.CallExpression, env *object.Env) object.Object
 		return fn
 	}
 
-	args := evalParameters(node.Arguments, env)
+	args := evalExpressions(node.Arguments, env)
 	if len(args) == 1 && isError(args[0]) {
 		return args[0]
 	}
@@ -34,29 +34,20 @@ func applyFunction(fn object.Object, args []object.Object, name interface{}) obj
 
 	switch fn := fn.(type) {
 	case *object.Function:
-		if len(args) != fn.ParametersNum {
-			return newError("wrong number of argument for %s, got=%d, want=%d", fnName, len(args), fn.ParametersNum)
+		if err := checkParameters(fnName, len(args), fn.ParametersNum); err != nil {
+			return err
 		}
 		fnEnv := makeFunctionEnv(fn, args)
 		evaluated := Eval(fn.Body, fnEnv)
 		return unwrapReturnValue(evaluated)
 	case *object.Builtin:
+		if err := checkParameters(fnName, len(args), fn.ParametersNum); err != nil {
+			return err
+		}
 		return fn.Fn(args...)
 	default:
 		return newError("%s is not a function", fnName)
 	}
-}
-
-func evalParameters(exps []ast.Expression, env *object.Env) []object.Object {
-	var result []object.Object
-	for _, e := range exps {
-		evaluated := Eval(e, env)
-		if isError(evaluated) {
-			return []object.Object{evaluated}
-		}
-		result = append(result, evaluated)
-	}
-	return result
 }
 
 func makeFunctionEnv(fn *object.Function, args []object.Object) *object.Env {
@@ -72,4 +63,11 @@ func unwrapReturnValue(obj object.Object) object.Object {
 		return returnValue.Value
 	}
 	return obj
+}
+
+func checkParameters(fnName string, argLength int, paramLength int) object.Object {
+	if argLength != paramLength {
+		return newError("wrong number of argument for %s, got=%d, want=%d", fnName, argLength, paramLength)
+	}
+	return nil
 }

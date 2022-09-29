@@ -10,7 +10,9 @@ func evalPipeExpression(node *ast.InfixExpression, env *object.Env) *ast.CallExp
 	if call, isCall := node.Right.(*ast.CallExpression); isCall {
 		call.Arguments = append([]ast.Expression{node.Left}, call.Arguments...)
 		return call
-	} else if identifier, isIdentifier := node.Right.(*ast.Identifier); isIdentifier {
+	}
+
+	if identifier, isIdentifier := node.Right.(*ast.Identifier); isIdentifier {
 		function := Eval(identifier, env)
 		if function == nil || isError(function) {
 			return nil
@@ -26,7 +28,7 @@ func evalPipeExpression(node *ast.InfixExpression, env *object.Env) *ast.CallExp
 			Arguments: []ast.Expression{node.Left},
 		}
 		return call
-	} else {
-		return nil
 	}
+
+	return nil
 }

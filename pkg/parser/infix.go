@@ -6,27 +6,28 @@ import (
 )
 
 var precedences = map[token.TokenType]int{
-	token.EQ:     EQUALS,
-	token.NOT_EQ: EQUALS,
-	token.LT:     LESSGREATER,
-	token.LTE:    LESSGREATER,
-	token.GT:     LESSGREATER,
-	token.GTE:    LESSGREATER,
-	token.PLUS:   SUM,
-	token.MINUS:  SUM,
-	token.DIV:    PRODUCT,
-	token.MUL:    PRODUCT,
-	token.PIPE:   PIPE,
-	token.LPAREN: CALL,
+	token.EQ:       EQUALS,
+	token.NOT_EQ:   EQUALS,
+	token.LT:       LESSGREATER,
+	token.LTE:      LESSGREATER,
+	token.GT:       LESSGREATER,
+	token.GTE:      LESSGREATER,
+	token.PLUS:     SUM,
+	token.MINUS:    SUM,
+	token.DIV:      PRODUCT,
+	token.MUL:      PRODUCT,
+	token.PIPE:     PIPE,
+	token.LPAREN:   CALL,
+	token.LBRACKET: INDEX,
 }
 
 func (p *Parser) registerAllInfixParsers() {
-	p.registerInfix(token.ASSIGN, p.parseInfixExpression)
-	p.registerInfix(token.PIPE, p.parseInfixExpression)
+	// artihmetic
 	p.registerInfix(token.PLUS, p.parseInfixExpression)
 	p.registerInfix(token.MINUS, p.parseInfixExpression)
 	p.registerInfix(token.DIV, p.parseInfixExpression)
 	p.registerInfix(token.MUL, p.parseInfixExpression)
+	// logical
 	p.registerInfix(token.EQ, p.parseInfixExpression)
 	p.registerInfix(token.NOT_EQ, p.parseInfixExpression)
 	p.registerInfix(token.LT, p.parseInfixExpression)
@@ -39,6 +40,9 @@ func (p *Parser) registerAllInfixParsers() {
 	p.registerInfix(token.VAND, p.parseInfixExpression)
 	// function call
 	p.registerInfix(token.LPAREN, p.parseCallExpression)
+	p.registerInfix(token.PIPE, p.parseInfixExpression)
+	// index
+	p.registerInfix(token.LBRACKET, p.parseIndexExpression)
 }
 
 func (p *Parser) peekPrecedence() int {

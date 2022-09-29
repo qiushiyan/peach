@@ -29,6 +29,8 @@ func Eval(node ast.Node, env *object.Env) object.Object {
 		return evalStringLiteral(node.Value)
 	case *ast.Boolean:
 		return evalBoolean(node.Value)
+	case *ast.VectorLiteral:
+		return evalVectorLiteral(node, env)
 	case *ast.FunctionLiteral:
 		return evalFunctionLiteral(node, env)
 	case *ast.CallExpression:
@@ -90,6 +92,18 @@ func evalProgram(program *ast.Program, env *object.Env) object.Object {
 		}
 	}
 
+	return result
+}
+
+func evalExpressions(exps []ast.Expression, env *object.Env) []object.Object {
+	var result []object.Object
+	for _, e := range exps {
+		evaluated := Eval(e, env)
+		if isError(evaluated) {
+			return []object.Object{evaluated}
+		}
+		result = append(result, evaluated)
+	}
 	return result
 }
 

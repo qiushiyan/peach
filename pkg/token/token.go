@@ -32,6 +32,7 @@ const (
 
 	// Delimiters
 	COMMA     // ,
+	COLON     // :
 	SEMICOLON // ;
 	LPAREN    // (
 	RPAREN    // )
@@ -128,6 +129,8 @@ func (t TokenType) String() string {
 		return "VAND"
 	case COMMA:
 		return "COMMA"
+	case COLON:
+		return "COLON"
 	case SEMICOLON:
 		return "SEMICOLON"
 	case LPAREN:
