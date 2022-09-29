@@ -24,6 +24,6 @@ func evalNumberInfixExpression(operator string, left object.Object, right object
 	case "!=":
 		return evalBoolean(leftVal != rightVal)
 	default:
-		return newError("operator %s does not support %s and %s", operator, left.Type(), right.Type())
+		return newInfixError(left, operator, right)
 	}
 }

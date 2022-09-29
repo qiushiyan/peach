@@ -50,15 +50,23 @@ func Eval(node ast.Node, env *object.Env) object.Object {
 		}
 		return evalPrefixExpression(node.Operator, right)
 	case *ast.InfixExpression:
-		left := Eval(node.Left, env)
-		if isError(left) {
-			return left
+		if node.Operator == "|>" {
+			call := evalPipeExpression(node, env)
+			if call == nil {
+				return newError("right hide side of |> should be a function call or function")
+			}
+			return evalCallExpression(call, env)
+		} else {
+			left := Eval(node.Left, env)
+			if isError(left) {
+				return left
+			}
+			right := Eval(node.Right, env)
+			if isError(right) {
+				return right
+			}
+			return evalInfixExpression(node.Operator, left, right)
 		}
-		right := Eval(node.Right, env)
-		if isError(right) {
-			return right
-		}
-		return evalInfixExpression(node.Operator, left, right)
 	case *ast.IfExpression:
 		return evalIfExpression(node, env)
 	case *ast.BlockStatement:

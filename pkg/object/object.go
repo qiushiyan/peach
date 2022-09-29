@@ -7,6 +7,7 @@ const (
 	NULL_OBJ     = "NULL"
 	RETURN_OBJ   = "RETURN"
 	FUNCTION_OBJ = "FUNCTION"
+	BUILTIN_OBJ  = "BUILTIN"
 	ERROR_OBJ    = "ERROR"
 
 	// colors

@@ -30,6 +30,8 @@ func applyFunction(fn object.Object, args []object.Object, name interface{}) obj
 		fnEnv := makeFunctionEnv(fn, args)
 		evaluated := Eval(fn.Body, fnEnv)
 		return unwrapReturnValue(evaluated)
+	case *object.Builtin:
+		return fn.Fn(args...)
 	default:
 		if name != nil {
 			return newError("%s is not a function", name)

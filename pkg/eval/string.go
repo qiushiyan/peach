@@ -14,6 +14,6 @@ func evalStringInfixExpression(operator string, left object.Object, right object
 	case "+":
 		return &object.String{Value: leftVal + rightVal}
 	default:
-		return NULL
+		return newInfixError(left, operator, right)
 	}
 }

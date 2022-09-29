@@ -21,7 +21,7 @@ func evalBangOperatorExpression(right object.Object) object.Object {
 				return TRUE
 			}
 		}
-		return FALSE
+		return newPrefixError("!", right)
 	}
 }
 
@@ -30,7 +30,7 @@ func evalPlusPrefixOperatorExpression(right object.Object) object.Object {
 	case object.NUMBER_OBJ:
 		return right
 	default:
-		return newError("operator + does not support type %s", right.Type())
+		return newPrefixError("+", right)
 	}
 }
 
@@ -40,6 +40,10 @@ func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
 		value := right.(*object.Number).Value
 		return &object.Number{Value: -value}
 	default:
-		return newError("operator - does not support type %s", right.Type())
+		return newPrefixError("-", right)
 	}
+}
+
+func newPrefixError(operator string, right object.Object) object.Object {
+	return newError("invalid operator %s for type %s", operator, right.Type())
 }
