@@ -50,8 +50,8 @@ func New(l *lexer.Lexer) *Parser {
 		infixParseFns:  make(map[token.TokenType]infixParseFn),
 	}
 
-	p.registerAllPrefixes()
-	p.registerAllInfixes()
+	p.registerAllPrefixParsers()
+	p.registerAllInfixParsers()
 	// Read two tokens, so curToken and nextToken are both set
 	p.advanceToken()
 	p.advanceToken()
@@ -94,6 +94,12 @@ func (p *Parser) parseStatement() ast.Statement {
 		return p.parseReturnStatement()
 	case token.LBRACE:
 		return p.parseBlockStatement()
+	case token.IDENTIFIER:
+		if p.nextTokenIs(token.ASSIGN) {
+			return p.parseAssignStatement()
+		} else {
+			return p.parseExpressionStatement()
+		}
 	default:
 		return p.parseExpressionStatement()
 	}

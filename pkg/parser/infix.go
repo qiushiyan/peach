@@ -20,7 +20,7 @@ var precedences = map[token.TokenType]int{
 	token.LPAREN: CALL,
 }
 
-func (p *Parser) registerAllInfixes() {
+func (p *Parser) registerAllInfixParsers() {
 	p.registerInfix(token.ASSIGN, p.parseInfixExpression)
 	p.registerInfix(token.PIPE, p.parseInfixExpression)
 	p.registerInfix(token.PLUS, p.parseInfixExpression)

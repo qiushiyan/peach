@@ -15,7 +15,7 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 	return expr
 }
 
-func (p *Parser) registerAllPrefixes() {
+func (p *Parser) registerAllPrefixParsers() {
 	p.registerPrefix(token.IDENTIFIER, p.parseIdentifier)
 	p.registerPrefix(token.NUMBER, p.parseNumberLiteral)
 	p.registerPrefix(token.STRING, p.parseStringLiteral)

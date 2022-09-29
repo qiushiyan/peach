@@ -25,19 +25,25 @@ func evalCallExpression(node *ast.CallExpression, env *object.Env) object.Object
 }
 
 func applyFunction(fn object.Object, args []object.Object, name interface{}) object.Object {
+	var fnName string
+	if name != nil {
+		fnName = name.(string)
+	} else {
+		fnName = fn.Inspect()
+	}
+
 	switch fn := fn.(type) {
 	case *object.Function:
+		if len(args) != fn.ParametersNum {
+			return newError("wrong number of argument for %s, got=%d, want=%d", fnName, len(args), fn.ParametersNum)
+		}
 		fnEnv := makeFunctionEnv(fn, args)
 		evaluated := Eval(fn.Body, fnEnv)
 		return unwrapReturnValue(evaluated)
 	case *object.Builtin:
 		return fn.Fn(args...)
 	default:
-		if name != nil {
-			return newError("%s is not a function", name)
-		} else {
-			return newError("not a function: %s", fn.Type())
-		}
+		return newError("%s is not a function", fnName)
 	}
 }
 

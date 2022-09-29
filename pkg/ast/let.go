@@ -13,14 +13,6 @@ type LetStatement struct {
 	Value Expression
 }
 
-func NewLetStatement(Name *Identifier, Value Expression) LetStatement {
-	return LetStatement{
-		Token: token.Token{Type: token.LET, Literal: "LET"},
-		Name:  Name,
-		Value: Value,
-	}
-}
-
 func (ls *LetStatement) statementNode()       {}
 func (ls *LetStatement) TokenLiteral() string { return ls.Token.Literal }
 
