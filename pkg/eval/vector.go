@@ -19,18 +19,18 @@ func evalVectorLiteral(node ast.Node, env *object.Env) object.Object {
 	switch firstElement.(type) {
 	case *object.Number:
 		if sameType(elements, reflect.TypeOf(firstElement)) {
-			return &object.NumericVector{Elements: elements}
+			return &object.NumericVector{BaseVector: object.BaseVector{Elements: elements}}
 		}
 	case *object.String:
 		if sameType(elements, reflect.TypeOf(firstElement)) {
-			return &object.CharacterVector{Elements: elements}
+			return &object.CharacterVector{BaseVector: object.BaseVector{Elements: elements}}
 		}
 	case *object.Boolean:
 		if sameType(elements, reflect.TypeOf(firstElement)) {
-			return &object.LogicalVector{Elements: elements}
+			return &object.LogicalVector{BaseVector: object.BaseVector{Elements: elements}}
 		}
 	}
-	return &object.Vector{Elements: elements}
+	return &object.Vector{BaseVector: object.BaseVector{Elements: elements}}
 }
 
 func sameType(values []object.Object, t reflect.Type) bool {

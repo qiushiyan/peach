@@ -25,41 +25,45 @@ func evalIndexExpression(node *ast.IndexExpression, env *object.Env) object.Obje
 func evalVectorIndexExpression(v object.Object, index object.Object) object.Object {
 	switch v.Type() {
 	case object.VECTOR_OBJ:
-		if start, end, valid := getIndexBounds(index, len(v.(*object.Vector).Elements)); valid {
+		vv := v.(*object.Vector)
+		if start, end, valid := getIndexBounds(index, vv.Length()); valid {
 			if end == 0 {
-				return v.(*object.Vector).Elements[start]
+				return vv.Elements[start]
 			} else {
-				return &object.Vector{Elements: v.(*object.Vector).Elements[start:end]}
+				return &object.Vector{BaseVector: object.BaseVector{Elements: vv.Elements[start:end]}}
 			}
 		} else {
 			return newError("index out of bounds for vector")
 		}
 	case object.NUMERIC_VECTOR_OBJ:
-		if start, end, valid := getIndexBounds(index, len(v.(*object.NumericVector).Elements)); valid {
+		nv := v.(*object.NumericVector)
+		if start, end, valid := getIndexBounds(index, nv.Length()); valid {
 			if end == 0 {
-				return v.(*object.NumericVector).Elements[start]
+				return nv.Elements[start]
 			} else {
-				return &object.NumericVector{Elements: v.(*object.NumericVector).Elements[start:end]}
+				return &object.NumericVector{BaseVector: object.BaseVector{Elements: nv.Elements[start:end]}}
 			}
 		} else {
 			return newError("index out of bounds for numeric vector")
 		}
 	case object.CHARACTER_VECTOR_OBJ:
-		if start, end, valid := getIndexBounds(index, len(v.(*object.CharacterVector).Elements)); valid {
+		cv := v.(*object.CharacterVector)
+		if start, end, valid := getIndexBounds(index, cv.Length()); valid {
 			if end == 0 {
-				return v.(*object.CharacterVector).Elements[start]
+				return cv.Elements[start]
 			} else {
-				return &object.CharacterVector{Elements: v.(*object.CharacterVector).Elements[start:end]}
+				return &object.CharacterVector{BaseVector: object.BaseVector{Elements: cv.Elements[start:end]}}
 			}
 		} else {
 			return newError("index out of bounds for character vector")
 		}
 	case object.LOGICAL_VECTOR_OBJ:
-		if start, end, valid := getIndexBounds(index, len(v.(*object.LogicalVector).Elements)); valid {
+		lv := v.(*object.LogicalVector)
+		if start, end, valid := getIndexBounds(index, lv.Length()); valid {
 			if end == 0 {
-				return v.(*object.LogicalVector).Elements[start]
+				return lv.Elements[start]
 			} else {
-				return &object.LogicalVector{Elements: v.(*object.LogicalVector).Elements[start:end]}
+				return &object.LogicalVector{BaseVector: object.BaseVector{Elements: lv.Elements[start:end]}}
 			}
 		} else {
 			return newError("index out of bounds for logical vector")
