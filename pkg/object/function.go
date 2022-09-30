@@ -8,10 +8,10 @@ import (
 )
 
 type Function struct {
-	Parameters    []*ast.Identifier
-	ParametersNum int
-	Body          *ast.BlockStatement
-	Env           *Env
+	Parameters            []*ast.Identifier
+	RequiredParametersNum int
+	Body                  *ast.BlockStatement
+	Env                   *Env
 }
 
 func (f *Function) Type() ObjectType { return FUNCTION_OBJ }

@@ -2,8 +2,8 @@ package object
 
 type BuiltinFunction func(args ...Object) Object
 type Builtin struct {
-	ParametersNum int
-	Fn            BuiltinFunction
+	RequiredParametersNum int
+	Fn                    BuiltinFunction
 }
 
 func (b *Builtin) Inspect() string  { return "builtin" }

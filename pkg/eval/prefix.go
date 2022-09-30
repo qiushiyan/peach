@@ -45,5 +45,5 @@ func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
 }
 
 func newPrefixError(operator string, right object.Object) object.Object {
-	return newError("invalid operator %s for type %s", operator, right.Type())
+	return object.NewError("invalid operator %s for type %s", operator, right.Type())
 }

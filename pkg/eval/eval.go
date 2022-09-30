@@ -59,7 +59,7 @@ func Eval(node ast.Node, env *object.Env) object.Object {
 		if node.Operator == "|>" {
 			call := evalPipeExpression(node, env)
 			if call == nil {
-				return newError("right hide side of |> should be a function call or function")
+				return &object.Error{Message: "right hide side of |> should be a function call or function"}
 			}
 			return evalCallExpression(call, env)
 		} else {
@@ -144,7 +144,7 @@ func evalPrefixExpression(operator string, right object.Object) object.Object {
 	case "-":
 		return evalMinusPrefixOperatorExpression(right)
 	default:
-		return newError("operator %s does not support %s", operator, right.Type())
+		return object.NewError("operator %s does not support %s", operator, right.Type())
 	}
 }
 

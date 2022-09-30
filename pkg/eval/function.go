@@ -7,9 +7,9 @@ import (
 
 func evalFunctionLiteral(node *ast.FunctionLiteral, env *object.Env) object.Object {
 	return &object.Function{
-		Parameters:    node.Parameters,
-		ParametersNum: len(node.Parameters),
-		Body:          node.Body,
-		Env:           env,
+		Parameters:            node.Parameters,
+		RequiredParametersNum: len(node.Parameters),
+		Body:                  node.Body,
+		Env:                   env,
 	}
 }

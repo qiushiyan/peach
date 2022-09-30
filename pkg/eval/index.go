@@ -18,7 +18,7 @@ func evalIndexExpression(node *ast.IndexExpression, env *object.Env) object.Obje
 	case *object.Vector, *object.NumericVector, *object.CharacterVector, *object.LogicalVector:
 		return evalVectorIndexExpression(left, index)
 	default:
-		return newError("invliad index operation for type %s", left.Type())
+		return object.NewError("invliad index operation for type %s", left.Type())
 	}
 }
 
@@ -33,7 +33,7 @@ func evalVectorIndexExpression(v object.Object, index object.Object) object.Obje
 				return &object.Vector{BaseVector: object.BaseVector{Elements: vv.Elements[start:end]}}
 			}
 		} else {
-			return newError("index out of bounds for vector")
+			return object.NewError("index out of bounds for vector")
 		}
 	case object.NUMERIC_VECTOR_OBJ:
 		nv := v.(*object.NumericVector)
@@ -44,7 +44,7 @@ func evalVectorIndexExpression(v object.Object, index object.Object) object.Obje
 				return &object.NumericVector{BaseVector: object.BaseVector{Elements: nv.Elements[start:end]}}
 			}
 		} else {
-			return newError("index out of bounds for numeric vector")
+			return object.NewError("index out of bounds for numeric vector")
 		}
 	case object.CHARACTER_VECTOR_OBJ:
 		cv := v.(*object.CharacterVector)
@@ -55,7 +55,7 @@ func evalVectorIndexExpression(v object.Object, index object.Object) object.Obje
 				return &object.CharacterVector{BaseVector: object.BaseVector{Elements: cv.Elements[start:end]}}
 			}
 		} else {
-			return newError("index out of bounds for character vector")
+			return object.NewError("index out of bounds for character vector")
 		}
 	case object.LOGICAL_VECTOR_OBJ:
 		lv := v.(*object.LogicalVector)
@@ -66,10 +66,10 @@ func evalVectorIndexExpression(v object.Object, index object.Object) object.Obje
 				return &object.LogicalVector{BaseVector: object.BaseVector{Elements: lv.Elements[start:end]}}
 			}
 		} else {
-			return newError("index out of bounds for logical vector")
+			return object.NewError("index out of bounds for logical vector")
 		}
 	default:
-		return newError("invliad index operation for type %s", v.Type())
+		return object.NewError("invliad index operation for type %s", v.Type())
 	}
 }
 

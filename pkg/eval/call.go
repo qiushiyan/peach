@@ -34,19 +34,19 @@ func applyFunction(fn object.Object, args []object.Object, name interface{}) obj
 
 	switch fn := fn.(type) {
 	case *object.Function:
-		if err := checkParameters(fnName, len(args), fn.ParametersNum); err != nil {
+		if err := checkParameters(fnName, len(args), fn.RequiredParametersNum); err != nil {
 			return err
 		}
 		fnEnv := makeFunctionEnv(fn, args)
 		evaluated := Eval(fn.Body, fnEnv)
 		return unwrapReturnValue(evaluated)
 	case *object.Builtin:
-		if err := checkParameters(fnName, len(args), fn.ParametersNum); err != nil {
+		if err := checkParameters(fnName, len(args), fn.RequiredParametersNum); err != nil {
 			return err
 		}
 		return fn.Fn(args...)
 	default:
-		return newError("%s is not a function", fnName)
+		return object.NewError("%s is not a function", fnName)
 	}
 }
 
@@ -66,8 +66,8 @@ func unwrapReturnValue(obj object.Object) object.Object {
 }
 
 func checkParameters(fnName string, argLength int, paramLength int) object.Object {
-	if argLength != paramLength {
-		return newError("wrong number of argument for %s, got=%d, want=%d", fnName, argLength, paramLength)
+	if argLength < paramLength {
+		return object.NewError("not enough arguments for %s, got=%d, required=%d", fnName, argLength, paramLength)
 	}
 	return nil
 }

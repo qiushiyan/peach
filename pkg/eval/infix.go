@@ -13,12 +13,12 @@ func evalInfixExpression(operator string, left object.Object, right object.Objec
 	case operator == "!=":
 		return evalBoolean(left != right)
 	case left.Type() != right.Type():
-		return newError("operaor %s needs values of the same type, got %s %s %s", operator, left.Type(), operator, right.Type())
+		return object.NewError("operaor %s needs values of the same type, got %s %s %s", operator, left.Type(), operator, right.Type())
 	default:
 		return newInfixError(left, operator, right)
 	}
 }
 
 func newInfixError(left object.Object, operator string, right object.Object) object.Object {
-	return newError("invalid operation %s %s %s", left.Type(), operator, right.Type())
+	return object.NewError("invalid operation %s %s %s", left.Type(), operator, right.Type())
 }

@@ -14,7 +14,7 @@ func evalRangeExpression(node *ast.RangeExpression, env *object.Env) object.Obje
 		if start_, ok := start_.(*object.Number); ok {
 			start = int(start_.Value)
 		} else {
-			return newError("range start must be a number")
+			return object.NewError("range start must be a number")
 		}
 	}
 	if node.End == nil {
@@ -24,7 +24,7 @@ func evalRangeExpression(node *ast.RangeExpression, env *object.Env) object.Obje
 		if end_, ok := end_.(*object.Number); ok {
 			end = int(end_.Value)
 		} else {
-			return newError("range end must be a number")
+			return object.NewError("range end must be a number")
 		}
 	}
 	return &object.Range{Start: start, End: end}
