@@ -3,6 +3,7 @@ package object
 import (
 	"bytes"
 	"fmt"
+	"reflect"
 	"strings"
 )
 
@@ -17,6 +18,8 @@ type IVector interface {
 	Length() int
 	Head(n int) Object
 	Tail(n int) Object
+	Values() []Object
+	Append(objects ...Object) Object
 }
 
 type BaseVector struct {
@@ -48,6 +51,7 @@ func (bv *BaseVector) Length() int {
 	return len(bv.Elements)
 }
 
+func (bv *BaseVector) Values(n int) []Object { return bv.Elements }
 func (bv *BaseVector) Head(n int) []Object {
 	if n > len(bv.Elements) {
 		n = len(bv.Elements)
@@ -57,6 +61,20 @@ func (bv *BaseVector) Head(n int) []Object {
 
 func (bv *BaseVector) Tail(n int) []Object {
 	return bv.Elements[len(bv.Elements)-n:]
+}
+
+func (bv *BaseVector) Append(vals ...Object) Object {
+	els := bv.Elements
+	for _, object := range vals {
+		switch obj := object.(type) {
+		case IVector:
+			els = append(els, obj.Values()...)
+		default:
+			els = append(els, obj)
+		}
+
+	}
+	return NewVector(els)
 }
 
 // vector with mixed types
@@ -73,6 +91,10 @@ func (v *Vector) Head(n int) Object {
 func (v *Vector) Tail(n int) Object {
 	return &Vector{BaseVector{v.BaseVector.Tail(n)}}
 }
+func (v *Vector) Values() []Object { return v.BaseVector.Elements }
+func (v *Vector) Append(objects ...Object) Object {
+	return v.BaseVector.Append(objects...)
+}
 
 // vectors with object.Number
 type NumericVector struct {
@@ -87,6 +109,12 @@ func (nv *NumericVector) Head(n int) Object {
 }
 func (nv *NumericVector) Tail(n int) Object {
 	return &NumericVector{BaseVector{nv.BaseVector.Tail(n)}}
+}
+func (nv *NumericVector) Values() []Object {
+	return nv.BaseVector.Elements
+}
+func (nv *NumericVector) Append(objects ...Object) Object {
+	return nv.BaseVector.Append(objects...)
 }
 
 // vectors with object.String
@@ -103,6 +131,12 @@ func (cv *CharacterVector) Head(n int) Object {
 func (cv *CharacterVector) Tail(n int) Object {
 	return &CharacterVector{BaseVector{cv.BaseVector.Tail(n)}}
 }
+func (cv *CharacterVector) Values() []Object {
+	return cv.BaseVector.Elements
+}
+func (cv *CharacterVector) Append(objects ...Object) Object {
+	return cv.BaseVector.Append(objects...)
+}
 
 // vectors with object.Boolean
 type LogicalVector struct {
@@ -117,4 +151,45 @@ func (lv *LogicalVector) Head(n int) Object {
 }
 func (lv *LogicalVector) Tail(n int) Object {
 	return &LogicalVector{BaseVector{lv.BaseVector.Tail(n)}}
+}
+func (lv *LogicalVector) Values() []Object {
+	return lv.BaseVector.Elements
+}
+func (lv *LogicalVector) Append(objects ...Object) Object {
+	return lv.BaseVector.Append(objects...)
+}
+
+// create vector based on type of first element
+func NewVector(elements []Object) Object {
+	firstElement := elements[0]
+	if len(elements) == 1 && IsError(firstElement) {
+		return elements[0]
+	}
+	switch firstElement.(type) {
+	case *Number:
+		if sameType(elements, reflect.TypeOf(firstElement)) {
+			return &NumericVector{BaseVector: BaseVector{Elements: elements}}
+		}
+	case *String:
+		if sameType(elements, reflect.TypeOf(firstElement)) {
+			return &CharacterVector{BaseVector: BaseVector{Elements: elements}}
+		}
+	case *Boolean:
+		if sameType(elements, reflect.TypeOf(firstElement)) {
+			return &LogicalVector{BaseVector: BaseVector{Elements: elements}}
+		}
+	}
+	return &Vector{BaseVector: BaseVector{Elements: elements}}
+}
+
+func sameType(values []Object, t reflect.Type) bool {
+	if len(values) == 0 {
+		return true
+	}
+	for _, v := range values[1:] {
+		if reflect.TypeOf(v) != t {
+			return false
+		}
+	}
+	return true
 }

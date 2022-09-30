@@ -7,12 +7,12 @@ import (
 
 func evalCallExpression(node *ast.CallExpression, env *object.Env) object.Object {
 	fn := Eval(node.Function, env)
-	if isError(fn) {
+	if object.IsError(fn) {
 		return fn
 	}
 
 	args := evalExpressions(node.Arguments, env)
-	if len(args) == 1 && isError(args[0]) {
+	if len(args) == 1 && object.IsError(args[0]) {
 		return args[0]
 	}
 

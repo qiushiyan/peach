@@ -7,7 +7,7 @@ import (
 
 func evalReturnStatement(node *ast.ReturnStatement, env *object.Env) object.Object {
 	val := Eval(node.Value, env)
-	if isError(val) {
+	if object.IsError(val) {
 		return val
 	}
 	return &object.ReturnValue{Value: val}

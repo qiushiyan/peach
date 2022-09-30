@@ -14,7 +14,7 @@ func evalPipeExpression(node *ast.InfixExpression, env *object.Env) *ast.CallExp
 
 	if identifier, isIdentifier := node.Right.(*ast.Identifier); isIdentifier {
 		function := Eval(identifier, env)
-		if function == nil || isError(function) {
+		if function == nil || object.IsError(function) {
 			return nil
 		}
 		call := &ast.CallExpression{

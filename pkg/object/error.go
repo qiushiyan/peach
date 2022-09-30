@@ -16,3 +16,10 @@ func NewError(text string, a ...interface{}) *Error {
 		Message: fmt.Sprintf(text, a...),
 	}
 }
+
+func IsError(obj Object) bool {
+	if obj != nil {
+		return obj.Type() == ERROR_OBJ
+	}
+	return false
+}

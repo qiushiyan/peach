@@ -7,11 +7,11 @@ import (
 
 func evalIndexExpression(node *ast.IndexExpression, env *object.Env) object.Object {
 	left := Eval(node.Left, env)
-	if isError(left) {
+	if object.IsError(left) {
 		return left
 	}
 	index := Eval(node.Index, env)
-	if isError(index) {
+	if object.IsError(index) {
 		return index
 	}
 	switch left.(type) {

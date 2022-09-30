@@ -70,4 +70,15 @@ var builtins = map[string]*object.Builtin{
 		},
 		RequiredParametersNum: 1,
 	},
+	"append": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			switch arg := args[0].(type) {
+			case object.IVector:
+				return arg.Append(args[1:]...)
+			default:
+				return object.NewError("invalid first argument in `append()`, must be a vector, got %s", args[0].Type())
+			}
+		},
+		RequiredParametersNum: 2,
+	},
 }

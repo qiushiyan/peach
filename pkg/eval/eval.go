@@ -45,13 +45,13 @@ func Eval(node ast.Node, env *object.Env) object.Object {
 		return evalReturnStatement(node, env)
 	case *ast.LetStatement:
 		val := Eval(node.Value, env)
-		if isError(val) {
+		if object.IsError(val) {
 			return val
 		}
 		env.Set(node.Name.Value, val)
 	case *ast.PrefixExpression:
 		right := Eval(node.Right, env)
-		if isError(right) {
+		if object.IsError(right) {
 			return right
 		}
 		return evalPrefixExpression(node.Operator, right)
@@ -64,11 +64,11 @@ func Eval(node ast.Node, env *object.Env) object.Object {
 			return evalCallExpression(call, env)
 		} else {
 			left := Eval(node.Left, env)
-			if isError(left) {
+			if object.IsError(left) {
 				return left
 			}
 			right := Eval(node.Right, env)
-			if isError(right) {
+			if object.IsError(right) {
 				return right
 			}
 			return evalInfixExpression(node.Operator, left, right)
@@ -87,7 +87,7 @@ func evalProgram(program *ast.Program, env *object.Env) object.Object {
 
 	for _, statement := range program.Statements {
 		result = Eval(statement, env)
-		if isError(result) {
+		if object.IsError(result) {
 			return result
 		}
 
@@ -103,7 +103,7 @@ func evalExpressions(exps []ast.Expression, env *object.Env) []object.Object {
 	var result []object.Object
 	for _, e := range exps {
 		evaluated := Eval(e, env)
-		if isError(evaluated) {
+		if object.IsError(evaluated) {
 			return []object.Object{evaluated}
 		}
 		result = append(result, evaluated)
@@ -150,7 +150,7 @@ func evalPrefixExpression(operator string, right object.Object) object.Object {
 
 func evalIfExpression(ie *ast.IfExpression, env *object.Env) object.Object {
 	condition := Eval(ie.Condition, env)
-	if isError(condition) {
+	if object.IsError(condition) {
 		return condition
 	}
 	if isTruthy(condition) {
