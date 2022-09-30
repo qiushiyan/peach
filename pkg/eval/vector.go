@@ -1,7 +1,6 @@
 package eval
 
 import (
-	"fmt"
 	"reflect"
 
 	"github.com/qiushiyan/qlang/pkg/ast"
@@ -20,7 +19,6 @@ func evalVectorLiteral(node ast.Node, env *object.Env) object.Object {
 	switch firstElement.(type) {
 	case *object.Number:
 		if sameType(elements, reflect.TypeOf(firstElement)) {
-			fmt.Println(reflect.TypeOf(firstElement))
 			return &object.NumericVector{Elements: elements}
 		}
 	case *object.String:

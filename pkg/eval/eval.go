@@ -29,8 +29,12 @@ func Eval(node ast.Node, env *object.Env) object.Object {
 		return evalStringLiteral(node.Value)
 	case *ast.Boolean:
 		return evalBoolean(node.Value)
+	case *ast.RangeExpression:
+		return evalRangeExpression(node, env)
 	case *ast.VectorLiteral:
 		return evalVectorLiteral(node, env)
+	case *ast.IndexExpression:
+		return evalIndexExpression(node, env)
 	case *ast.FunctionLiteral:
 		return evalFunctionLiteral(node, env)
 	case *ast.CallExpression:

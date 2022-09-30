@@ -9,7 +9,7 @@ const (
 	FUNCTION_OBJ = "FUNCTION"
 	BUILTIN_OBJ  = "BUILTIN"
 	ERROR_OBJ    = "ERROR"
-
+	RANGE_OBJ    = "RANGE"
 	// vector
 	VECTOR_OBJ = "VECTOR"
 	// []object.Number

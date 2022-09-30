@@ -16,6 +16,7 @@ const (
 	SUM         // +
 	PRODUCT     // *
 	PIPE        // |>
+	RANGE       // x:y
 	PREFIX      // -X or !X
 	CALL        // myFunction(X)
 	INDEX       // Vector[index]

@@ -15,6 +15,7 @@ type IVector interface {
 	Type() ObjectType
 	Inspect() string
 	Values() []Object
+	// Index(object Object) Object
 }
 
 // vector with mixed types
@@ -23,7 +24,7 @@ type Vector struct {
 }
 
 func (v *Vector) Type() ObjectType { return VECTOR_OBJ }
-func (v *Vector) Inspect() string  { return InspectVector(v, "") }
+func (v *Vector) Inspect() string  { return inspectVector(v, "") }
 func (v *Vector) Values() []Object { return v.Elements }
 
 // vectors with object.Number
@@ -32,7 +33,7 @@ type NumericVector struct {
 }
 
 func (nv *NumericVector) Type() ObjectType { return NUMERIC_VECTOR_OBJ }
-func (nv *NumericVector) Inspect() string  { return InspectVector(nv, "Numeric") }
+func (nv *NumericVector) Inspect() string  { return inspectVector(nv, "Numeric") }
 func (nv *NumericVector) Values() []Object { return nv.Elements }
 
 // vectors with object.String
@@ -41,7 +42,7 @@ type CharacterVector struct {
 }
 
 func (cv *CharacterVector) Type() ObjectType { return NUMERIC_VECTOR_OBJ }
-func (cv *CharacterVector) Inspect() string  { return InspectVector(cv, "Characetr") }
+func (cv *CharacterVector) Inspect() string  { return inspectVector(cv, "Characetr") }
 func (cv *CharacterVector) Values() []Object { return cv.Elements }
 
 // vectors with object.Boolean
@@ -50,11 +51,11 @@ type LogicalVector struct {
 }
 
 func (lv *LogicalVector) Type() ObjectType { return NUMERIC_VECTOR_OBJ }
-func (lv *LogicalVector) Inspect() string  { return InspectVector(lv, "Logical") }
+func (lv *LogicalVector) Inspect() string  { return inspectVector(lv, "Logical") }
 func (lv *LogicalVector) Values() []Object { return lv.Elements }
 
-// helper function for Inspect an Array
-func InspectVector(v IVector, dtype string) string {
+// helper function for inspecting
+func inspectVector(v IVector, dtype string) string {
 	values := v.Values()
 	if len(values) == 0 {
 		return "[]"
