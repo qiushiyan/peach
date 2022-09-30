@@ -97,6 +97,10 @@ func (p *Parser) ParseProgram() *ast.Program {
 
 func (p *Parser) parseStatement() ast.Statement {
 	switch p.curToken.Type {
+	// ignore empty line
+	case token.NEWLINE:
+		p.advanceToken()
+		return p.parseStatement()
 	case token.LET:
 		return p.parseLetStatement()
 	case token.RETURN:
