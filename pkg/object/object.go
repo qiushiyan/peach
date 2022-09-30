@@ -19,6 +19,9 @@ const (
 	// []object.Boolean
 	LOGICAL_VECTOR_OBJ = "LOGICAL_VECTOR"
 
+	// dict
+	DICT_OBJ = "DICT"
+
 	// colors
 	COLOR_BLUE  = "\033[34m"
 	COLOR_RESET = "\033[0m"

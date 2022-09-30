@@ -40,8 +40,15 @@ type Parser struct {
 func (p *Parser) registerPrefix(tokenType token.TokenType, fn prefixParseFn) {
 	p.prefixParseFns[tokenType] = fn
 }
+func (p *Parser) deregisterPrefix(tokenType token.TokenType) {
+	delete(p.prefixParseFns, tokenType)
+}
+
 func (p *Parser) registerInfix(tokenType token.TokenType, fn infixParseFn) {
 	p.infixParseFns[tokenType] = fn
+}
+func (p *Parser) deregisterInfix(tokenType token.TokenType) {
+	delete(p.infixParseFns, tokenType)
 }
 
 func New(l *lexer.Lexer) *Parser {
@@ -94,8 +101,6 @@ func (p *Parser) parseStatement() ast.Statement {
 		return p.parseLetStatement()
 	case token.RETURN:
 		return p.parseReturnStatement()
-	case token.LBRACE:
-		return p.parseBlockStatement()
 	case token.IDENTIFIER:
 		if p.nextTokenIs(token.ASSIGN) {
 			return p.parseAssignStatement()

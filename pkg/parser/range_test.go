@@ -23,24 +23,24 @@ func TestRangeParsing(t *testing.T) {
 	if !ok {
 		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
 	}
-	expr, ok := statement.Expression.(*ast.RangeExpression)
-	if !ok {
-		t.Fatalf("expr not *ast.RangeExpression. got=%T", expr)
-	}
 
-	if !testRange(t, *expr, 1, 10) {
+	if !testRangeExpression(t, statement.Expression, 1, 10) {
 		return
 	}
 }
 
-func testRange(t *testing.T, expr ast.RangeExpression, start, end float64) bool {
-	exprStart := expr.Start.(*ast.NumberLiteral).Value
+func testRangeExpression(t *testing.T, expr ast.Expression, start, end float64) bool {
+	rangeExpr, ok := expr.(*ast.RangeExpression)
+	if !ok {
+		t.Fatalf("expr not *ast.RangeExpression. got=%T", expr)
+	}
+	exprStart := rangeExpr.Start.(*ast.NumberLiteral).Value
 	if exprStart != start {
 		t.Errorf("range.Start want=%v, got=%v", exprStart, start)
 		return false
 	}
 
-	exprEnd := expr.End.(*ast.NumberLiteral).Value
+	exprEnd := rangeExpr.End.(*ast.NumberLiteral).Value
 	if exprEnd != end {
 		t.Errorf("range.End want=%v, got=%v", exprEnd, end)
 		return false

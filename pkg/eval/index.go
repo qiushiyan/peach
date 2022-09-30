@@ -15,8 +15,19 @@ func evalIndexExpression(node *ast.IndexExpression, env *object.Env) object.Obje
 		return index
 	}
 	switch left.(type) {
-	case *object.Vector, *object.NumericVector, *object.CharacterVector, *object.LogicalVector:
-		return evalVectorIndexExpression(left, index)
+	case object.IVector:
+		if index.Type() == object.NUMBER_OBJ || index.Type() == object.RANGE_OBJ {
+			return evalVectorIndexExpression(left, index)
+		} else {
+			return object.NewError("index must be a number or range")
+		}
+	case *object.Dict:
+		switch index.(type) {
+		case object.Hashable:
+			return evalDictIndexExpression(left, index)
+		default:
+			return object.NewError("index must be a hashable type")
+		}
 	default:
 		return object.NewError("invliad index operation for type %s", left.Type())
 	}
@@ -107,4 +118,16 @@ func getIndexBounds(index object.Object, length int) (int, int, bool) {
 
 func indexOutofBounds(start, end, length int) bool {
 	return start < 0 || end > length
+}
+
+// index dict
+func evalDictIndexExpression(d object.Object, index object.Object) object.Object {
+	// index is already verified as Hashable in evalIndexExpression
+	dict := d.(*object.Dict)
+	key := index.(object.Hashable).Hash()
+	if pair, ok := dict.Pairs[key]; ok {
+		return pair.Value
+	} else {
+		return NULL
+	}
 }

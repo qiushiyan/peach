@@ -1,6 +1,8 @@
 package eval
 
 import (
+	"fmt"
+
 	"github.com/qiushiyan/qlang/pkg/object"
 )
 
@@ -80,5 +82,44 @@ var builtins = map[string]*object.Builtin{
 			}
 		},
 		RequiredParametersNum: 2,
+	},
+	"keys": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			switch arg := args[0].(type) {
+			case *object.Dict:
+				var keys []object.Object
+				for _, pair := range arg.Pairs {
+					keys = append(keys, pair.Key)
+				}
+				return object.NewVector(keys)
+			default:
+				return object.NewError("invalid first argument in `keys()`, must be a dict, got %s", args[0].Type())
+			}
+		},
+		RequiredParametersNum: 1,
+	},
+	"values": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			switch arg := args[0].(type) {
+			case *object.Dict:
+				var values []object.Object
+				for _, pair := range arg.Pairs {
+					values = append(values, pair.Value)
+				}
+				return object.NewVector(values)
+			default:
+				return object.NewError("invalid first argument in `values()`, must be a dict, got %s", args[0].Type())
+			}
+		},
+		RequiredParametersNum: 1,
+	},
+	"print": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			for _, arg := range args {
+				fmt.Println(arg.Inspect())
+			}
+			return NULL
+		},
+		RequiredParametersNum: 1,
 	},
 }

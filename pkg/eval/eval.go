@@ -33,6 +33,8 @@ func Eval(node ast.Node, env *object.Env) object.Object {
 		return evalRangeExpression(node, env)
 	case *ast.VectorLiteral:
 		return evalVectorLiteral(node, env)
+	case *ast.DictLiteral:
+		return evalDictLiteral(node, env)
 	case *ast.IndexExpression:
 		return evalIndexExpression(node, env)
 	case *ast.FunctionLiteral:
