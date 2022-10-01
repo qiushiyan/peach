@@ -8,7 +8,8 @@ import (
 func evalFunctionLiteral(node *ast.FunctionLiteral, env *object.Env) object.Object {
 	return &object.Function{
 		Parameters:            node.Parameters,
-		RequiredParametersNum: len(node.Parameters),
+		Defaults:              node.Defaults,
+		RequiredParametersNum: len(node.Parameters) - len(node.Defaults),
 		Body:                  node.Body,
 		Env:                   env,
 	}

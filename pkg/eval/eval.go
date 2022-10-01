@@ -152,7 +152,7 @@ func evalPrefixExpression(operator string, right object.Object) object.Object {
 	case "-":
 		return evalMinusPrefixOperatorExpression(right)
 	default:
-		return object.NewError("operator %s does not support %s", operator, right.Type())
+		return object.NewError("invalid operator %s for type %s", operator, right.Type())
 	}
 }
 
