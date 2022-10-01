@@ -51,8 +51,16 @@ func (p *Parser) parseExpressionList(end token.TokenType) []ast.Expression {
 	list = append(list, p.parseExpression(LOWEST))
 	for p.nextTokenIs(token.COMMA) {
 		p.advanceToken()
+		// curToken is now comma
+		if p.nextTokenIs(token.NEWLINE) {
+			p.advanceToken()
+		}
 		p.advanceToken()
+		// curToken is now the next expression
 		list = append(list, p.parseExpression(LOWEST))
+	}
+	if p.nextTokenIs(token.NEWLINE) {
+		p.advanceToken()
 	}
 	if !p.expectNextToken(end) {
 		return nil

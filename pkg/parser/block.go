@@ -9,7 +9,6 @@ import (
 
 func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 	// curToken is {
-	p.deregisterPrefix(token.LBRACE)
 	block := &ast.BlockStatement{Token: p.curToken, Statements: []ast.Statement{}}
 	p.advanceToken()
 
