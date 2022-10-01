@@ -18,7 +18,7 @@ func evalCallExpression(node *ast.CallExpression, env *object.Env) object.Object
 		return err
 	}
 	if !ok {
-		// at this point argumenta are evaluated successfully, but at least one kwargs appears before args
+		// at this point argumenta are evaluated successfully, but at least one kwarg appears before args
 		return object.NewError("Keyword arguments must appear after positional arguments")
 	}
 
@@ -36,9 +36,7 @@ type Arguments struct {
 }
 
 // reuturn 3 values
-// 1. arguments the parsed map
-// 2. whether parsing is successful
-// 3. error object
+// the parsed map, whether parsing is successful, error object
 func evalArguments(args []ast.Expression, env *object.Env) (*Arguments, object.Object, bool) {
 	result := &Arguments{Args: []object.Object{}, Kwargs: map[string]object.Object{}}
 	for _, expr := range args {
@@ -56,7 +54,7 @@ func evalArguments(args []ast.Expression, env *object.Env) (*Arguments, object.O
 			val := Eval(expr, env)
 			result.Args = append(result.Args, val)
 			if object.IsError(val) {
-				return result, nil, false
+				return result, val, false
 			}
 		}
 	}
@@ -78,7 +76,10 @@ func applyFunction(fn object.Object, args *Arguments, name interface{}) object.O
 		if err := checkParameters(fnName, argLength, fn.RequiredParametersNum); err != nil {
 			return err
 		}
-		fnEnv := makeFunctionEnv(fn, args, argLength)
+		fnEnv, errorKwarg := makeFunctionEnv(fn, args, argLength)
+		if errorKwarg != "" {
+			return object.NewError("unexpected keyword argument %s in function %s", errorKwarg, fnName)
+		}
 		evaluated := Eval(fn.Body, fnEnv)
 		return unwrapReturnValue(evaluated)
 	case *object.Builtin:
@@ -94,25 +95,31 @@ func applyFunction(fn object.Object, args *Arguments, name interface{}) object.O
 	}
 }
 
-func makeFunctionEnv(fn *object.Function, args *Arguments, argLength int) *object.Env {
+func makeFunctionEnv(fn *object.Function, args *Arguments, argLength int) (*object.Env, string) {
 	env := object.NewEnclosedEnvironment(fn.Env)
 	// set default values
 	for param, val := range fn.Defaults {
 		env.Set(param, Eval(val, env))
 	}
-	for paramIdx, param := range fn.Parameters {
-		// only set explicit arguments
-		if paramIdx < argLength {
-			if val, ok := args.Kwargs[param.Value]; ok {
-				// set keyword arguments
-				env.Set(param.Value, val)
-			} else {
-				// set positional arguments
-				env.Set(param.Value, args.Args[paramIdx])
+
+	for idx, positionalArg := range args.Args {
+		env.Set(fn.Parameters[idx].Value, positionalArg)
+	}
+	for name, kwarg := range args.Kwargs {
+		kwargFound := false
+		// if kwarg is found in function parameters, set it
+		for _, param := range fn.Parameters {
+			if param.Value == name {
+				env.Set(name, kwarg)
+				kwargFound = true
+				break
 			}
 		}
+		if !kwargFound {
+			return env, name
+		}
 	}
-	return env
+	return env, ""
 }
 
 func unwrapReturnValue(obj object.Object) object.Object {

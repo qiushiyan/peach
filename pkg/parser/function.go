@@ -46,13 +46,13 @@ func (p *Parser) parseFunction() ast.Expression {
 }
 
 func (p *Parser) parseFunctionParameters() ([]*ast.Identifier, map[string]ast.Expression) {
-	identifiers := []*ast.Identifier{}
+	parameters := []*ast.Identifier{}
 	defaults := make(map[string]ast.Expression)
 
 	// curToken is LPAREN
 	if p.nextTokenIs(token.RPAREN) {
 		p.advanceToken()
-		return identifiers, defaults
+		return parameters, defaults
 	}
 
 	for !p.nextTokenIs(token.RPAREN) {
@@ -64,10 +64,10 @@ func (p *Parser) parseFunctionParameters() ([]*ast.Identifier, map[string]ast.Ex
 
 		expr := p.parseExpression(LOWEST)
 		if identifier, ok := expr.(*ast.Identifier); ok {
-			identifiers = append(identifiers, identifier)
+			parameters = append(parameters, identifier)
 		}
 		if assignExpr, ok := expr.(*ast.AssignExpression); ok {
-			identifiers = append(identifiers, assignExpr.Name)
+			parameters = append(parameters, assignExpr.Name)
 			defaults[assignExpr.Name.Value] = assignExpr.Value
 		}
 
@@ -79,5 +79,5 @@ func (p *Parser) parseFunctionParameters() ([]*ast.Identifier, map[string]ast.Ex
 	if !p.expectNextToken(token.RPAREN) {
 		return nil, nil
 	}
-	return identifiers, defaults
+	return parameters, defaults
 }
