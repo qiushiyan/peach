@@ -37,7 +37,8 @@ func TestErrorHandling(t *testing.T) {
 			}
 			return 1
 		}`, "invalid operation BOOLEAN + BOOLEAN",
-		}}
+		},
+	}
 
 	for _, tt := range tests {
 		evaluated := testEval(tt.input)

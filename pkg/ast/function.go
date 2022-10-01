@@ -10,6 +10,7 @@ import (
 type FunctionLiteral struct {
 	Token      token.Token
 	Parameters []*Identifier
+	Defaults   map[string]Expression
 	Body       *BlockStatement
 }
 

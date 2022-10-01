@@ -18,6 +18,9 @@ func (p *Parser) parseExpressionStatement() ast.Statement {
 }
 
 func (p *Parser) parseExpression(precedence int) ast.Expression {
+	if p.curTokenIs(token.NEWLINE) {
+		p.advanceToken()
+	}
 	prefixFn := p.prefixParseFns[p.curToken.Type]
 	if prefixFn == nil {
 		p.noPrefixParseFnError(p.curToken.Type)
@@ -35,7 +38,6 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 	}
 
 	return leftExp
-
 }
 
 // parse a comma separated list of expressions into a slice

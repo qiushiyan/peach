@@ -24,6 +24,5 @@ func (ls *LetStatement) String() string {
 	if ls.Value != nil {
 		out.WriteString(ls.Value.String())
 	}
-	out.WriteString(";")
 	return out.String()
 }

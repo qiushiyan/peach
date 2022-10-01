@@ -30,14 +30,15 @@ func TestAssign(t *testing.T) {
 				len(program.Statements))
 		}
 
-		statement := program.Statements[0]
-		if !testLetStatement(t, statement, tt.expectedIdentifier) {
-			return
+		statement := program.Statements[0].(*ast.ExpressionStatement)
+
+		expr, ok := statement.Expression.(*ast.AssignExpression)
+		if !ok {
+			t.Fatalf("statement.Expression is not ast.AssignExpression. got=%T",
+				statement.Expression)
 		}
 
-		val := statement.(*ast.LetStatement).Value
-		if !testLiteralExpression(t, val, tt.expectedValue) {
-			return
-		}
+		testIdentifier(t, expr.Name, tt.expectedIdentifier)
+		testLiteralExpression(t, expr.Value, tt.expectedValue)
 	}
 }

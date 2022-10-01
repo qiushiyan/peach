@@ -8,21 +8,27 @@ import (
 )
 
 func (p *Parser) parseBlockStatement() *ast.BlockStatement {
-	block := &ast.BlockStatement{Token: p.curToken}
-	block.Statements = []ast.Statement{}
-
+	// curToken is {
+	p.deregisterPrefix(token.LBRACE)
+	block := &ast.BlockStatement{Token: p.curToken, Statements: []ast.Statement{}}
 	p.advanceToken()
+
 	for !p.curTokenIs(token.RBRACE) && !p.curTokenIs(token.EOF) {
 		statement := p.parseStatement()
 		if statement != nil {
 			block.Statements = append(block.Statements, statement)
 		}
 		p.advanceToken()
+		if p.curTokenIs(token.NEWLINE) {
+			p.advanceToken()
+		}
 	}
+
 	if !p.curTokenIs(token.RBRACE) {
 		p.unclosedBlockError()
 		return nil
 	}
+
 	return block
 }
 

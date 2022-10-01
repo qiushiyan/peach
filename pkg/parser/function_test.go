@@ -34,6 +34,47 @@ func TestFunctionParameterParsing(t *testing.T) {
 	}
 }
 
+func TestFunctionDefaultParameterParsing(t *testing.T) {
+	input := `fn(x, y = 1, z = 2) {}`
+	l := lexer.New(strings.NewReader(input))
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+	statement := program.Statements[0].(*ast.ExpressionStatement)
+	function := statement.Expression.(*ast.FunctionLiteral)
+
+	if len(function.Parameters) != 3 {
+		t.Errorf("number of parameters wrong. want=%d, got=%d\n",
+			3, len(function.Parameters))
+	}
+
+	if !testIdentifier(t, function.Parameters[0], "x") {
+		return
+	}
+
+	if !testIdentifier(t, function.Parameters[1], "y") {
+		return
+	}
+	if !testIdentifier(t, function.Parameters[2], "z") {
+		return
+	}
+
+	if len(function.Defaults) != 2 {
+		t.Errorf("number of default values wrong. want=%d, got=%d\n",
+			2, len(function.Defaults))
+	}
+
+	if !testLiteralExpression(t, function.Defaults["y"], 1) {
+		t.Errorf("default value for y wrong. want=%v, got=%v\n",
+			1, function.Defaults["y"].(*ast.NumberLiteral).Value)
+	}
+
+	if !testLiteralExpression(t, function.Defaults["z"], 2) {
+		t.Errorf("default value for z wrong. want=%v, got=%v\n",
+			2, function.Defaults["z"].(*ast.NumberLiteral).Value)
+	}
+}
+
 func TestFunctionLiteralParsing(t *testing.T) {
 	tests := []string{
 		"fn(x, y) { x + y }",

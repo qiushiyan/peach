@@ -6,6 +6,7 @@ import (
 )
 
 var precedences = map[token.TokenType]int{
+	token.ASSIGN:   ASSIGN,
 	token.EQ:       EQUALS,
 	token.NOT_EQ:   EQUALS,
 	token.LT:       LESSGREATER,
@@ -39,6 +40,8 @@ func (p *Parser) registerAllInfixParsers() {
 	p.registerInfix(token.VOR, p.parseInfixExpression)
 	p.registerInfix(token.AND, p.parseInfixExpression)
 	p.registerInfix(token.VAND, p.parseInfixExpression)
+	// assignment
+	p.registerInfix(token.ASSIGN, p.parseAssignExpression)
 	// function call
 	p.registerInfix(token.LPAREN, p.parseCallExpression)
 	p.registerInfix(token.PIPE, p.parseInfixExpression)

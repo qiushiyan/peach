@@ -20,6 +20,5 @@ func (rs *ReturnStatement) String() string {
 	if rs.Value != nil {
 		out.WriteString(rs.Value.String())
 	}
-	out.WriteString(";")
 	return out.String()
 }

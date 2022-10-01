@@ -15,8 +15,13 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	if !p.expectNextToken(token.RPAREN) {
 		return nil
 	}
+
+	p.advanceToken()
+	// curToken is the one after ) in if condition
 	expr.Consequence = p.parseIfBranch()
-	if p.nextTokenIs(token.ELSE) {
+	// curToken is }
+	p.advanceToken()
+	if p.curTokenIs(token.ELSE) {
 		p.advanceToken()
 		expr.Alternative = p.parseIfBranch()
 	}
@@ -25,8 +30,6 @@ func (p *Parser) parseIfExpression() ast.Expression {
 }
 
 func (p *Parser) parseIfBranch() *ast.BlockStatement {
-	// jump to the next token after ) or ELSE
-	p.advanceToken()
 	if p.curTokenIs(token.LBRACE) {
 		return p.parseBlockStatement()
 	} else {

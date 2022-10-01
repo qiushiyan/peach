@@ -11,6 +11,7 @@ import (
 const (
 	_ int = iota
 	LOWEST
+	ASSIGN      // =
 	EQUALS      // ==
 	LESSGREATER // >, >=, <, <=
 	SUM         // +
@@ -105,12 +106,6 @@ func (p *Parser) parseStatement() ast.Statement {
 		return p.parseLetStatement()
 	case token.RETURN:
 		return p.parseReturnStatement()
-	case token.IDENTIFIER:
-		if p.nextTokenIs(token.ASSIGN) {
-			return p.parseAssignStatement()
-		} else {
-			return p.parseExpressionStatement()
-		}
 	default:
 		return p.parseExpressionStatement()
 	}

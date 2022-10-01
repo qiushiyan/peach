@@ -13,7 +13,7 @@ func (p *Parser) parseFunction() ast.Expression {
 	if !p.expectNextToken(token.LPAREN) {
 		return nil
 	}
-	fn.Parameters = p.parseFunctionParameters()
+	fn.Parameters, fn.Defaults = p.parseFunctionParameters()
 	p.advanceToken()
 	if p.curTokenIs(token.LBRACE) {
 		fn.Body = p.parseBlockStatement()
@@ -45,23 +45,39 @@ func (p *Parser) parseFunction() ast.Expression {
 	return fn
 }
 
-func (p *Parser) parseFunctionParameters() []*ast.Identifier {
+func (p *Parser) parseFunctionParameters() ([]*ast.Identifier, map[string]ast.Expression) {
 	identifiers := []*ast.Identifier{}
+	defaults := make(map[string]ast.Expression)
+
+	// curToken is LPAREN
 	if p.nextTokenIs(token.RPAREN) {
 		p.advanceToken()
-		return identifiers
+		return identifiers, defaults
 	}
-	p.advanceToken()
-	ident := &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
-	identifiers = append(identifiers, ident)
-	for p.nextTokenIs(token.COMMA) {
+
+	for !p.nextTokenIs(token.RPAREN) {
 		p.advanceToken()
-		p.advanceToken()
-		identifier := &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
-		identifiers = append(identifiers, identifier)
+		if p.curTokenIs(token.EOF) {
+			p.errors = append(p.errors, fmt.Sprintf("unterminated function parameters %d:%d", p.curToken.Line, p.curToken.Col))
+			return nil, nil
+		}
+
+		expr := p.parseExpression(LOWEST)
+		if identifier, ok := expr.(*ast.Identifier); ok {
+			identifiers = append(identifiers, identifier)
+		}
+		if assignExpr, ok := expr.(*ast.AssignExpression); ok {
+			identifiers = append(identifiers, assignExpr.Name)
+			defaults[assignExpr.Name.Value] = assignExpr.Value
+		}
+
+		if p.nextTokenIs(token.COMMA) {
+			p.advanceToken()
+		}
 	}
+
 	if !p.expectNextToken(token.RPAREN) {
-		return nil
+		return nil, nil
 	}
-	return identifiers
+	return identifiers, defaults
 }
