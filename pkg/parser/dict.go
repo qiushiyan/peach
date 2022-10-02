@@ -25,7 +25,7 @@ func (p *Parser) parseDictLiteral() ast.Expression {
 		value := p.parseExpression(LOWEST)
 		dict.Pairs[key] = value
 
-		if p.nextTokenIs(token.NEWLINE) {
+		for p.nextTokenIs(token.NEWLINE) {
 			p.advanceToken()
 		}
 		if !p.nextTokenIs(token.RBRACE) && !p.expectNextToken(token.COMMA) {

@@ -16,6 +16,10 @@ const (
 	PROMPT = "\U0000279C  "
 )
 
+type Config struct {
+	interactive bool
+}
+
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
 	env := object.NewEnv()
