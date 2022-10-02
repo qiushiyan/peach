@@ -76,11 +76,17 @@ except that you don’t have to quote the keys.
 
 ``` q
 property = "functional"
-q = {name: "Q", "age": 0, property: true}
-q
+q = {name: "Q", age: 0, property: true}
+print(q)
+print(keys(q))
+print(values(q))
 ```
 
     #> {"name": "Q", "age": 0, "functional": true}
+    #> CharacterVector with 3 elements
+    #> ["functional", "name", "age"]
+    #> Vector with 3 elements
+    #> [0, true, "Q"]
 
 ### Control flows
 
@@ -91,21 +97,17 @@ arguments and returned from other functions. There is a `return` keyword
 but functions can also use implicit returns.
 
 ``` q
-let fib = fn(x) {
-  if (x == 0) {
-    0
-  } else {
-    if (x == 1) {
-      return 1
-    } else {
-      fib(x - 1) + fib(x - 2)
-    }
+make_adder = fn(x, y = 1, z = 2) {
+  fn(x) {
+    return x + y + z * 2
   }
 }
-fib(10)
+
+adder = make_adder(1, z = 3)
+adder(1)
 ```
 
-    #> [34mERROR: identifier not found: fib[0m
+    #> [34mERROR: identifier not found: y[0m
 
 ## Next steps
 

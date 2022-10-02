@@ -78,7 +78,9 @@ The hash table structure in Q is called a dictionary similar in Python, except t
 ```{q}
 property = "functional"
 q = {name: "Q", age: 0, property: true}
-q
+print(q)
+print(keys(q))
+print(values(q))
 ```
 
 ### Control flows
@@ -90,18 +92,14 @@ Functions in Q are first-class citizens. They can be passed around as arguments 
 
 
 ```{q}
-let fib = fn(x) {
-  if (x == 0) {
-    0
-  } else {
-    if (x == 1) {
-      return 1
-    } else {
-      fib(x - 1) + fib(x - 2)
-    }
+make_adder = fn(x, y = 1, z = 2) {
+  fn(x) {
+    return x + y + z * 2
   }
 }
-fib(10)
+
+adder = make_adder(1, z = 3)
+adder(1)
 ```
 
 ## Next steps
