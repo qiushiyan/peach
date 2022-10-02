@@ -41,8 +41,12 @@ func evalArguments(args []ast.Expression, env *object.Env) (*Arguments, object.O
 	result := &Arguments{Args: []object.Object{}, Kwargs: map[string]object.Object{}}
 	for _, expr := range args {
 		if assignExpr, ok := expr.(*ast.AssignExpression); ok {
+			identifier, ok := assignExpr.Left.(*ast.Identifier)
+			if !ok {
+				return nil, object.NewError("invalid keyword arguments, left hand side must be an identifier, got %s", assignExpr.Left.String()), false
+			}
 			val := Eval(assignExpr.Value, env)
-			result.Kwargs[assignExpr.Name.Value] = val
+			result.Kwargs[identifier.Value] = val
 			if object.IsError(val) {
 				return result, val, false
 			}

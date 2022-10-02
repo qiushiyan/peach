@@ -67,8 +67,13 @@ func (p *Parser) parseFunctionParameters() ([]*ast.Identifier, map[string]ast.Ex
 			parameters = append(parameters, identifier)
 		}
 		if assignExpr, ok := expr.(*ast.AssignExpression); ok {
-			parameters = append(parameters, assignExpr.Name)
-			defaults[assignExpr.Name.Value] = assignExpr.Value
+			identifier, ok := assignExpr.Left.(*ast.Identifier)
+			if !ok {
+				p.errors = append(p.errors, fmt.Sprintf("invalid default parameter %d:%d, must be an identifier", p.curToken.Line, p.curToken.Col))
+				return nil, nil
+			}
+			parameters = append(parameters, identifier)
+			defaults[identifier.Value] = assignExpr.Value
 		}
 
 		if p.nextTokenIs(token.COMMA) {

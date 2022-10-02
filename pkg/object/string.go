@@ -13,6 +13,9 @@ func (s *String) Inspect() string { return fmt.Sprintf("\"%s\"", s.Value) }
 func (s *String) Type() ObjectType {
 	return STRING_OBJ
 }
+func (s *String) Clone() Object {
+	return &String{Value: s.Value}
+}
 func (s *String) Hash() DictKey {
 	h := fnv.New64a()
 	h.Write([]byte(s.Value))

@@ -9,9 +9,9 @@ func TestIndexExpressopm(t *testing.T) {
 	}{
 		{"[1, 2, 3][1]", "1"},
 		{"[1, 2, 3][3]", "3"},
-		{"[1, 2, 3][1:]", "NumericVector with 3 elements\n[1, 2, 3]"},
-		{"[1, 2, 3][1:3]", "NumericVector with 3 elements\n[1, 2, 3]"},
-		{"[1, 2, 3][:3]", "NumericVector with 3 elements\n[1, 2, 3]"},
+		{"[1, 2, 3][1:]", "[1, 2, 3]"},
+		{"[1, 2, 3][1:3]", "[1, 2, 3]"},
+		{"[1, 2, 3][:3]", "[1, 2, 3]"},
 	}
 
 	for _, tt := range tests {

@@ -14,12 +14,13 @@ func evalIndexExpression(node *ast.IndexExpression, env *object.Env) object.Obje
 	if object.IsError(index) {
 		return index
 	}
-	switch left.(type) {
+	switch l := left.(type) {
 	case object.IVector:
-		if index.Type() == object.NUMBER_OBJ || index.Type() == object.RANGE_OBJ {
-			return evalVectorIndexExpression(left, index)
-		} else {
-			return object.NewError("index must be a number or range")
+		switch i := index.(type) {
+		case *object.Number, *object.Range:
+			return evalVectorIndexExpression(l, i)
+		default:
+			return object.NewError("index must be a number or range, got %s", i.Type())
 		}
 	case *object.Dict:
 		switch index.(type) {
@@ -33,50 +34,45 @@ func evalIndexExpression(node *ast.IndexExpression, env *object.Env) object.Obje
 	}
 }
 
-func evalVectorIndexExpression(v object.Object, index object.Object) object.Object {
-	vv := v.(object.IVector)
-	if start, end, valid := getIndexBounds(index, vv.Length()); valid {
-		if end == 0 {
-			return vv.Values()[start]
+func evalVectorIndexExpression(vec object.IVector, index object.Object) object.Object {
+	switch index := index.(type) {
+	case *object.Number:
+		if idx := int(index.Value) - 1; idx < vec.Length() && idx >= 0 {
+			return vec.Values()[idx]
 		} else {
-
-			return object.NewVector(vv.Values()[start:end])
+			return object.NewError("index out of bounds for vector of length %d, got %d", vec.Length(), int(index.Value))
 		}
-	} else {
-		return object.NewError("index out of bounds for vector")
+	case *object.Range:
+		start, end, valid := getIndexBounds(index, vec.Length())
+		if !valid {
+			return object.NewError("index out of bounds for vector of length %d, got %d:%d", vec.Length(), index.Start, index.End)
+		}
+		return vec.Slice(start, end)
+	default:
+		return object.NewError("index must be a number or range, got %s", index.Type())
 	}
 }
 
 // start, end, valid
-func getIndexBounds(index object.Object, length int) (int, int, bool) {
-	switch index.(type) {
-	case *object.Number:
-		idx := int(index.(*object.Number).Value) - 1
-		if idx < 0 || idx >= length {
-			return 0, 0, false
-		}
-		return idx, 0, true
-	case *object.Range:
-		var start, end int
-		rangeObj := index.(*object.Range)
-		if rangeObj.Start == -1 {
-			start = 0
-		} else {
-			start = rangeObj.Start - 1
-		}
-		if rangeObj.End == -1 {
-			end = length
-		} else {
-			end = rangeObj.End
-		}
-		if indexOutofBounds(start, end, length) || start > end {
-			return 0, 0, false
-		}
-
-		return start, end, true
-	default:
+func getIndexBounds(index *object.Range, length int) (int, int, bool) {
+	var start, end int
+	// :end
+	if index.Start == -1 {
+		start = 0
+	} else {
+		start = index.Start - 1
+	}
+	// start:
+	if index.End == -1 {
+		end = length
+	} else {
+		end = index.End
+	}
+	if indexOutofBounds(start, end, length) || start > end {
 		return 0, 0, false
 	}
+
+	return start, end, true
 }
 
 func indexOutofBounds(start, end, length int) bool {
@@ -87,9 +83,8 @@ func indexOutofBounds(start, end, length int) bool {
 func evalDictIndexExpression(d object.Object, index object.Object) object.Object {
 	// index is already verified as Hashable in evalIndexExpression
 	dict := d.(*object.Dict)
-	key := index.(object.Hashable).Hash()
-	if pair, ok := dict.Pairs[key]; ok {
-		return pair.Value
+	if val, ok := dict.Get(index); ok {
+		return val
 	} else {
 		return object.NULL
 	}

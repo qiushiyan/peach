@@ -13,8 +13,11 @@ func (n *Number) Type() ObjectType {
 func (i *Number) Hash() DictKey {
 	return DictKey{Type: i.Type(), Value: uint64(i.Value)}
 }
+func (i *Number) Clone() Object {
+	return &Number{Value: i.Value}
+}
 
-// only for builtin functions
+// not used, all numbers are stored as float64
 type Integer struct {
 	Value int64
 }

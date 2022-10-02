@@ -38,21 +38,23 @@ values. Q offers the vector data structure as created by `[]`
 [1, 2, 3]
 ```
 
-    #> NumericVector with 3 elements
     #> [1, 2, 3]
+
+The `print()` helper shows the vector’s type of as well as the number fo
+elements.
+
+``` q
+print([1, 2, "hello"])
+```
+
+    #> Vector with 3 elements
+    #> [1, 2, "hello"]
 
 A vector is typed by its inner elements. Vectors containing only numbers
 numeric vectors, vectors with only string elements are string vectors,
 and so on. A vector with mixed types is simply a base `Vector` type, as
 is a Python list. No type conversion is done automatically, if the
 elements are heterogeneous the base type will be used.
-
-``` q
-[1, 2, "hello"]
-```
-
-    #> Vector with 3 elements
-    #> [1, 2, "hello"]
 
 Vectors in Q have 1-based indexing: the first element starts at index 1,
 not 0. Built-in functions for vectors include `len()`, `append()`,
@@ -77,34 +79,43 @@ Inspired by R, operators are vectorized and can be applied directly to
 vectors.
 
 ``` q
-print([1, 2, 3] + [4, 5, 6])
-print([1, 2, 3] * [4, 5, 6])
+[1, 2, 3] + [4, 5, 6]
 ```
 
-    #> NumericVector with 3 elements
     #> [5, 7, 9]
-    #> NumericVector with 3 elements
+
+``` q
+[1, 2, 3] * [4, 5, 6]
+```
+
     #> [4, 10, 18]
 
 ``` q
 ["hello ", "good "] + ["world", "morning"]
 ```
 
-    #> CharacterVector with 2 elements
     #> ["hello world", "good morning"]
 
 Vector elements are recycled only if it has lenght 1 or is a scalar of
 primitive type.
 
 ``` q
-print([1, 2, 3] * 2)
-print([1, 2, 3] + [4])
+[1, 2, 3] * 2
 ```
 
-    #> NumericVector with 3 elements
     #> [2, 4, 6]
-    #> NumericVector with 3 elements
+
+``` q
+[1, 2, 3] + [4]
+```
+
     #> [5, 6, 7]
+
+``` q
+[1, 2, 3] + [4, 5]
+```
+
+    #> Error: Incompatible vector lengths, left=3 and right=2
 
 ### Dictionaries
 
@@ -116,28 +127,37 @@ keys.
 property = "functional"
 q = {name: "Q", age: 0, property: true}
 print(q)
+
+q["age"] = q["age"] + 1
+
 print(keys(q))
 print(values(q))
 ```
 
     #> {"name": "Q", "age": 0, "functional": true}
     #> CharacterVector with 3 elements
-    #> ["functional", "name", "age"]
+    #> ["age", "functional", "name"]
     #> Vector with 3 elements
-    #> ["Q", 0, true]
+    #> ["Q", 1, true]
 
 ### Control flows
+
+Q supports `for ... in` loops and if eles conditions. Both the iteration
+and condition need to be put in parentheses.
 
 ``` q
 for (name in ["Q", "R", "Python"]) {
   if (name != "Python") {
     print(name)
+  } else {
+    print("I don't like Python")
   }
 }
 ```
 
     #> "Q"
     #> "R"
+    #> "I don't like Python"
 
 ### Functions
 
@@ -183,6 +203,8 @@ let sum = fn(arr) {
 - `...` for variadic arguments
 
 - fix `append()` to use copy
+
+- index tests for vector and dict
 
 - dataframe interface
 

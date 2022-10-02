@@ -10,7 +10,7 @@ let reduce = fn(f, seed, arr) {
 }
 
 let sum = fn(arr) {
-	reduce(fn(acc, it) { acc + it }, 2, arr)
+	reduce(fn(acc, it) { acc + it }, 0, arr)
 }
 
 [1, 2, 3, 4, 5] |> sum

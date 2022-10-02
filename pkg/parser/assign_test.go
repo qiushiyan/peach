@@ -38,7 +38,7 @@ func TestAssign(t *testing.T) {
 				statement.Expression)
 		}
 
-		testIdentifier(t, expr.Name, tt.expectedIdentifier)
+		testIdentifier(t, expr.Left, tt.expectedIdentifier)
 		testLiteralExpression(t, expr.Value, tt.expectedValue)
 	}
 }

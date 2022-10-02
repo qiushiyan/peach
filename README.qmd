@@ -51,11 +51,13 @@ Both R and Python has 1-dimensional containers for storing a series of values. Q
 [1, 2, 3]
 ```
 
-A vector is typed by its inner elements. Vectors containing only numbers numeric vectors, vectors with only string elements are string vectors, and so on. A vector with mixed types is simply a base `Vector` type, as is a Python list. No type conversion is done automatically, if the elements are heterogeneous the base type will be used.
+The `print()` helper shows the vector's type of as well as the number fo elements.
 
 ```{q}
-[1, 2, "hello"]
+print([1, 2, "hello"])
 ```
+
+A vector is typed by its inner elements. Vectors containing only numbers numeric vectors, vectors with only string elements are string vectors, and so on. A vector with mixed types is simply a base `Vector` type, as is a Python list. No type conversion is done automatically, if the elements are heterogeneous the base type will be used.
 
 Vectors in Q have 1-based indexing: the first element starts at index 1, not 0. Built-in functions for vectors include `len()`, `append()`, `head()`, `tail()`
 
@@ -70,8 +72,11 @@ print(head(x, 10))
 Inspired by R, operators are vectorized and can be applied directly to vectors.
 
 ```{q}
-print([1, 2, 3] + [4, 5, 6])
-print([1, 2, 3] * [4, 5, 6])
+[1, 2, 3] + [4, 5, 6]
+```
+
+```{q}
+[1, 2, 3] * [4, 5, 6]
 ```
 
 ```{q}
@@ -81,30 +86,42 @@ print([1, 2, 3] * [4, 5, 6])
 Vector elements are recycled only if it has lenght 1 or is a scalar of primitive type.
 
 ```{q}
-print([1, 2, 3] * 2)
-print([1, 2, 3] + [4])
+[1, 2, 3] * 2
+```
+
+```{q}
+[1, 2, 3] + [4]
+```
+
+```{q}
+[1, 2, 3] + [4, 5]
 ```
 
 ### Dictionaries
 
 You can create a hash table structure in Q called a dictionary with a pair of `{`, similar to Python, except that you don't have to quote the keys.
 
-
 ```{q}
 property = "functional"
 q = {name: "Q", age: 0, property: true}
 print(q)
+
+q["age"] = q["age"] + 1
+
 print(keys(q))
 print(values(q))
 ```
 
 ### Control flows
 
+Q supports `for ... in` loops and if eles conditions. Both the iteration and condition need to be put in parentheses.
 
 ```{q}
 for (name in ["Q", "R", "Python"]) {
   if (name != "Python") {
     print(name)
+  } else {
+    print("I don't like Python")
   }
 }
 ```
@@ -154,6 +171,8 @@ let sum = fn(arr) {
 * `...` for variadic arguments
 
 * fix `append()` to use copy
+
+* index tests for vector and dict
 
 * dataframe interface
 

@@ -23,7 +23,12 @@ func length(env *object.Env, args ...object.Object) object.Object {
 
 func print(env *object.Env, args ...object.Object) object.Object {
 	for _, arg := range args {
-		fmt.Println(arg.Inspect())
+		switch arg := arg.(type) {
+		case object.IVector:
+			fmt.Println(arg.Print())
+		default:
+			fmt.Println(arg.Inspect())
+		}
 	}
 	return object.NULL
 }

@@ -9,7 +9,7 @@ import (
 // expression node for `<identifier> = <expression>`
 type AssignExpression struct {
 	Token token.Token // the identifier
-	Name  *Identifier
+	Left  Expression
 	Value Expression
 }
 
@@ -19,7 +19,7 @@ func (ae *AssignExpression) TokenLiteral() string { return ae.Token.Literal }
 func (ae *AssignExpression) String() string {
 	var out bytes.Buffer
 	out.WriteString(ae.TokenLiteral() + " ")
-	out.WriteString(ae.Name.String())
+	out.WriteString(ae.Left.String())
 	out.WriteString(" = ")
 	if ae.Value != nil {
 		out.WriteString(ae.Value.String())

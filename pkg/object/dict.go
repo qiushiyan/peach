@@ -36,3 +36,14 @@ func (d *Dict) Keys() []Object {
 	}
 	return keys
 }
+func (d *Dict) Set(key Object, value Object) {
+	d.Pairs[key.(Hashable).Hash()] = DictPair{key, value}
+}
+
+func (d *Dict) Get(key Object) (Object, bool) {
+	pair, ok := d.Pairs[key.(Hashable).Hash()]
+	if !ok {
+		return nil, false
+	}
+	return pair.Value, true
+}
