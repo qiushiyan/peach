@@ -8,9 +8,11 @@ import (
 
 	"github.com/qiushiyan/qlang/pkg/object"
 	"github.com/qiushiyan/qlang/pkg/repl"
+	"github.com/qiushiyan/qlang/pkg/std"
 )
 
 func main() {
+	std.RegisterStd()
 	if len(os.Args) < 2 {
 		// repl
 		user, err := user.Current()

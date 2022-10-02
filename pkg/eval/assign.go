@@ -11,5 +11,5 @@ func evalAssignExpression(node *ast.AssignExpression, env *object.Env) object.Ob
 		return val
 	}
 	env.Set(node.Name.Value, val)
-	return NULL
+	return object.NULL
 }

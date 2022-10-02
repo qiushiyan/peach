@@ -23,9 +23,9 @@ func evalCallExpression(node *ast.CallExpression, env *object.Env) object.Object
 	}
 
 	if identifier, ok := node.Function.(*ast.Identifier); ok {
-		return applyFunction(fn, args, identifier.Value)
+		return applyFunction(fn, args, identifier.Value, env)
 	} else {
-		return applyFunction(fn, args, nil)
+		return applyFunction(fn, args, nil, env)
 	}
 
 }
@@ -62,7 +62,7 @@ func evalArguments(args []ast.Expression, env *object.Env) (*Arguments, object.O
 	return result, nil, true
 }
 
-func applyFunction(fn object.Object, args *Arguments, name interface{}) object.Object {
+func applyFunction(fn object.Object, args *Arguments, name interface{}, env *object.Env) object.Object {
 	var fnName string
 	if name != nil {
 		fnName = name.(string)
@@ -89,7 +89,7 @@ func applyFunction(fn object.Object, args *Arguments, name interface{}) object.O
 		if len(args.Kwargs) > 0 {
 			return object.NewError("builtin function %s does not support keyword arguments", fnName)
 		}
-		return fn.Fn(args.Args...)
+		return fn.Fn(env, args.Args...)
 	default:
 		return object.NewError("%s is not a function", fnName)
 	}

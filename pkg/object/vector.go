@@ -66,6 +66,7 @@ func (bv *BaseVector) Tail(n int) []Object {
 	return bv.Elements[len(bv.Elements)-n:]
 }
 
+// append objects to vector, flattening if necessary
 func (bv *BaseVector) Append(vals ...Object) Object {
 	els := bv.Elements
 	for _, object := range vals {

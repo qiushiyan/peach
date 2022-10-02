@@ -9,12 +9,6 @@ import (
 	"github.com/qiushiyan/qlang/pkg/parser"
 )
 
-var (
-	NULL  = &object.Null{}
-	TRUE  = &object.Boolean{Value: true}
-	FALSE = &object.Boolean{Value: false}
-)
-
 func Eval(node ast.Node, env *object.Env) object.Object {
 	switch node := node.(type) {
 	case *ast.Program:
@@ -50,11 +44,7 @@ func Eval(node ast.Node, env *object.Env) object.Object {
 	case *ast.AssignExpression:
 		return evalAssignExpression(node, env)
 	case *ast.PrefixExpression:
-		right := Eval(node.Right, env)
-		if object.IsError(right) {
-			return right
-		}
-		return evalPrefixExpression(node.Operator, right)
+		return evalPrefixExpression(node, env)
 	case *ast.InfixExpression:
 		if node.Operator == "|>" {
 			call := evalPipeExpression(node, env)
@@ -123,28 +113,7 @@ func evalNumberLiteral(value float64) object.Object {
 }
 
 func evalNull() *object.Null {
-	return NULL
-}
-
-func evalBoolean(value bool) *object.Boolean {
-	if value {
-		return TRUE
-	} else {
-		return FALSE
-	}
-}
-
-func evalPrefixExpression(operator string, right object.Object) object.Object {
-	switch operator {
-	case "!":
-		return evalBangOperatorExpression(right)
-	case "+":
-		return evalPlusPrefixOperatorExpression(right)
-	case "-":
-		return evalMinusPrefixOperatorExpression(right)
-	default:
-		return object.NewError("invalid operator %s for type %s", operator, right.Type())
-	}
+	return object.NULL
 }
 
 func evalIfExpression(ie *ast.IfExpression, env *object.Env) object.Object {
@@ -157,7 +126,7 @@ func evalIfExpression(ie *ast.IfExpression, env *object.Env) object.Object {
 	} else if ie.Alternative != nil {
 		return Eval(ie.Alternative, env)
 	} else {
-		return NULL
+		return object.NULL
 	}
 }
 

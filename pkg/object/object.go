@@ -20,6 +20,11 @@ const (
 	COLOR_RESET = "\033[0m"
 )
 
+// only need one "constant" object for true, false and null
+var NULL = &Null{}
+var TRUE = &Boolean{Value: true}
+var FALSE = &Boolean{Value: false}
+
 type ObjectType string
 
 type Object interface {

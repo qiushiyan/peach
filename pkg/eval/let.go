@@ -11,5 +11,5 @@ func evalLetStatement(node *ast.LetStatement, env *object.Env) object.Object {
 		return val
 	}
 	env.Set(node.Name.Value, val)
-	return NULL
+	return object.NULL
 }

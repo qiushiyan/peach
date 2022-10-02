@@ -107,14 +107,13 @@ Functions in Q are first-class citizens. They can be passed around as arguments 
 
 
 ```markdown
-make_adder = fn(x, y = 1, z = 2) {
-  fn(x) {
-    return x + y + z * 2
+map = fn(arr, f) {
+  result = []
+  for (x in arr) {
+    result = append(result, f(x))
   }
+  result
 }
-
-adder = make_adder(1, z = 3)
-adder(1)
 ```
 
 ## Next steps

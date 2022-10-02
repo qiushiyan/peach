@@ -1,6 +1,6 @@
 package object
 
-type BuiltinFunction func(args ...Object) Object
+type BuiltinFunction func(env *Env, args ...Object) Object
 type Builtin struct {
 	RequiredParametersNum int
 	Fn                    BuiltinFunction

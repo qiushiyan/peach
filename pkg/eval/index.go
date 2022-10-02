@@ -91,6 +91,6 @@ func evalDictIndexExpression(d object.Object, index object.Object) object.Object
 	if pair, ok := dict.Pairs[key]; ok {
 		return pair.Value
 	} else {
-		return NULL
+		return object.NULL
 	}
 }

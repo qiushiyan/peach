@@ -28,8 +28,8 @@ func TestDictLiterals(t *testing.T) {
 		(&object.String{Value: "two"}).Hash():   2,
 		(&object.String{Value: "three"}).Hash(): 3,
 		(&object.Integer{Value: 4}).Hash():      4,
-		TRUE.Hash():                             5,
-		FALSE.Hash():                            6,
+		object.TRUE.Hash():                      5,
+		object.FALSE.Hash():                     6,
 	}
 
 	if len(result.Pairs) != len(expected) {
