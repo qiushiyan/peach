@@ -120,9 +120,9 @@ print(keys(q))
 print(values(q))
 ```
 
-    #> {"functional": true, "name": "Q", "age": 0}
+    #> {"name": "Q", "age": 0, "functional": true}
     #> CharacterVector with 3 elements
-    #> ["age", "functional", "name"]
+    #> ["functional", "name", "age"]
     #> Vector with 3 elements
     #> ["Q", 0, true]
 
@@ -131,12 +131,13 @@ print(values(q))
 ``` q
 for (name in ["Q", "R", "Python"]) {
   if (name != "Python") {
-    print(Python)
+    print(name)
   }
 }
 ```
 
-    #> [34mERROR: identifier not found: Python[0m
+    #> "Q"
+    #> "R"
 
 ### Functions
 

@@ -104,7 +104,7 @@ print(values(q))
 ```{q}
 for (name in ["Q", "R", "Python"]) {
   if (name != "Python") {
-    print(Python)
+    print(name)
   }
 }
 ```
