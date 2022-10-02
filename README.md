@@ -40,7 +40,7 @@ values. Q offers the vector data structure as created by `[]`
 
     #> [1, 2, 3]
 
-The `print()` helper shows the vector’s type of as well as the number fo
+The `print()` helper shows the vector’s type as well as the number fo
 elements.
 
 ``` q
@@ -50,11 +50,12 @@ print([1, 2, "hello"])
     #> Vector with 3 elements
     #> [1, 2, "hello"]
 
-A vector is typed by its inner elements. Vectors containing only numbers
-numeric vectors, vectors with only string elements are string vectors,
-and so on. A vector with mixed types is simply a base `Vector` type, as
-is a Python list. No type conversion is done automatically, if the
-elements are heterogeneous the base type will be used.
+As in R, a vector is typed by its inner elements. Vectors containing
+only numbers are numeric vectors, vectors with only string elements are
+character vectors, and so on. A vector with mixed types is simply a base
+`Vector` type, similar to a Python list. No type conversion is done
+automatically, if the elements are heterogeneous the base type will be
+used.
 
 Vectors in Q have 1-based indexing: the first element starts at index 1,
 not 0. Built-in functions for vectors include `len()`, `append()`,
@@ -96,8 +97,7 @@ vectors.
 
     #> ["hello world", "good morning"]
 
-Vector elements are recycled only if it has lenght 1 or is a scalar of
-primitive type.
+Elements are recycled only if it has lenght 1 or is a scalar.
 
 ``` q
 [1, 2, 3] * 2
@@ -115,7 +115,7 @@ primitive type.
 [1, 2, 3] + [4, 5]
 ```
 
-    #> Error: Incompatible vector lengths, left=3 and right=2
+    #> [34mERROR: Incompatible vector lengths, left=3 and right=2[0m
 
 ### Dictionaries
 
@@ -136,7 +136,7 @@ print(values(q))
 
     #> {"name": "Q", "age": 0, "functional": true}
     #> CharacterVector with 3 elements
-    #> ["age", "functional", "name"]
+    #> ["name", "age", "functional"]
     #> Vector with 3 elements
     #> ["Q", 1, true]
 

@@ -51,13 +51,13 @@ Both R and Python has 1-dimensional containers for storing a series of values. Q
 [1, 2, 3]
 ```
 
-The `print()` helper shows the vector's type of as well as the number fo elements.
+The `print()` helper shows the vector's type as well as the number fo elements.
 
 ```{q}
 print([1, 2, "hello"])
 ```
 
-A vector is typed by its inner elements. Vectors containing only numbers numeric vectors, vectors with only string elements are string vectors, and so on. A vector with mixed types is simply a base `Vector` type, as is a Python list. No type conversion is done automatically, if the elements are heterogeneous the base type will be used.
+As in R, a vector is typed by its inner elements. Vectors containing only numbers are numeric vectors, vectors with only string elements are character vectors, and so on. A vector with mixed types is simply a base `Vector` type, similar to a Python list. No type conversion is done automatically, if the elements are heterogeneous the base type will be used.
 
 Vectors in Q have 1-based indexing: the first element starts at index 1, not 0. Built-in functions for vectors include `len()`, `append()`, `head()`, `tail()`
 
@@ -83,7 +83,7 @@ Inspired by R, operators are vectorized and can be applied directly to vectors.
 ["hello ", "good "] + ["world", "morning"]
 ```
 
-Vector elements are recycled only if it has lenght 1 or is a scalar of primitive type.
+Elements are recycled only if it has lenght 1 or is a scalar.
 
 ```{q}
 [1, 2, 3] * 2
