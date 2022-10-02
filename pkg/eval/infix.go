@@ -8,6 +8,10 @@ func evalInfixExpression(operator string, left object.Object, right object.Objec
 		return evalNumberInfixExpression(operator, left, right)
 	case left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ:
 		return evalStringInfixExpression(operator, left, right)
+	case left.Type() == object.VECTOR_OBJ && right.Type() == object.VECTOR_OBJ:
+		left := left.(object.IVector)
+		right := right.(object.IVector)
+		return evalVectorInfixExpression(operator, left, right)
 	case operator == "==":
 		return evalBoolean(left == right)
 	case operator == "!=":

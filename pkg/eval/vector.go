@@ -16,3 +16,9 @@ func evalVectorLiteral(node ast.Node, env *object.Env) object.Object {
 
 	return object.NewVector(elements)
 }
+
+func evalVectorInfixExpression(operator string, left, right object.IVector) object.Object {
+	return left.Infix(func(x object.Object, y object.Object) object.Object {
+		return evalInfixExpression(operator, x, y)
+	}, right)
+}

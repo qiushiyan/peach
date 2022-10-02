@@ -12,13 +12,6 @@ const (
 	RANGE_OBJ    = "RANGE"
 	// vector
 	VECTOR_OBJ = "VECTOR"
-	// []object.Number
-	NUMERIC_VECTOR_OBJ = "NUMERIC_VECTOR"
-	// []object.String
-	CHARACTER_VECTOR_OBJ = "CHARACTER_VECTOR"
-	// []object.Boolean
-	LOGICAL_VECTOR_OBJ = "LOGICAL_VECTOR"
-
 	// dict
 	DICT_OBJ = "DICT"
 

@@ -5,7 +5,6 @@ embed-resources: true
 knitr:
     opts_chunk:
         comment: "#>"
-        collapse: true
 ---
 
 ```{r}
@@ -29,8 +28,6 @@ Q is a toy programming language with a mix of R and Python's syntax. It was writ
 
 ### Primitives
 
-
-
 Primitive data structures include: numbers (integers and floats), strings and booleans
 
 ```{q}
@@ -48,19 +45,19 @@ Primitive data structures include: numbers (integers and floats), strings and bo
 
 ### Vectors
 
-Similar to R Q has vectors typed by its inner elements. Vectors with number elements are numeric vectors, vectors with string elements are string vectors, and so on. A vector with mixed types is simply a base `Vector` type.
-
-
-```{q}
-[1, 2, 3, 4, 5]
-```
+Both R and Python has 1-dimensional containers for storing a series of values. Q offers the vector data structure as created by `[]`
 
 ```{q}
-["hello", "world"]
+[1, 2, 3]
 ```
 
-Vectors in Q has 1-based indexing, so the first element is at index 1, not 0. Built-in functions for vectors include `len()`, `append()`, `head()`, `tail()`
+A vector is typed by its inner elements. Vectors containing only numbers numeric vectors, vectors with only string elements are string vectors, and so on. A vector with mixed types is simply a base `Vector` type, as is a Python list. No type conversion is done automatically, if the elements are heterogeneous the base type will be used.
 
+```{q}
+[1, 2, "hello"]
+```
+
+Vectors in Q have 1-based indexing: the first element starts at index 1, not 0. Built-in functions for vectors include `len()`, `append()`, `head()`, `tail()`
 
 ```{q}
 x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -70,10 +67,22 @@ print(append(x, [11, 12, 13], 14, "15"))
 print(head(x, 10))
 ```
 
+Inspired by R, operators are vectorized and can be applied directly to vectors.
+
+```{q}
+print([1, 2, 3] + [4, 5, 6])
+print([1, 2, 3] * [4, 5, 6])
+```
+
+```{q}
+["hello ", "good "] + ["world", "morning"]
+```
+
+
 
 ### Dictionaries
 
-The hash table structure in Q is called a dictionary similar in Python, except that you don't have to quote the keys.
+You can create a hash table structure in Q called a dictionary with a pair of `{`, similar to Python, except that you don't have to quote the keys.
 
 
 ```{q}

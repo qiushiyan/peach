@@ -34,53 +34,16 @@ func evalIndexExpression(node *ast.IndexExpression, env *object.Env) object.Obje
 }
 
 func evalVectorIndexExpression(v object.Object, index object.Object) object.Object {
-	switch v.Type() {
-	case object.VECTOR_OBJ:
-		vv := v.(*object.Vector)
-		if start, end, valid := getIndexBounds(index, vv.Length()); valid {
-			if end == 0 {
-				return vv.Elements[start]
-			} else {
-				return &object.Vector{BaseVector: object.BaseVector{Elements: vv.Elements[start:end]}}
-			}
+	vv := v.(object.IVector)
+	if start, end, valid := getIndexBounds(index, vv.Length()); valid {
+		if end == 0 {
+			return vv.Values()[start]
 		} else {
-			return object.NewError("index out of bounds for vector")
+
+			return object.NewVector(vv.Values()[start:end])
 		}
-	case object.NUMERIC_VECTOR_OBJ:
-		nv := v.(*object.NumericVector)
-		if start, end, valid := getIndexBounds(index, nv.Length()); valid {
-			if end == 0 {
-				return nv.Elements[start]
-			} else {
-				return &object.NumericVector{BaseVector: object.BaseVector{Elements: nv.Elements[start:end]}}
-			}
-		} else {
-			return object.NewError("index out of bounds for numeric vector")
-		}
-	case object.CHARACTER_VECTOR_OBJ:
-		cv := v.(*object.CharacterVector)
-		if start, end, valid := getIndexBounds(index, cv.Length()); valid {
-			if end == 0 {
-				return cv.Elements[start]
-			} else {
-				return &object.CharacterVector{BaseVector: object.BaseVector{Elements: cv.Elements[start:end]}}
-			}
-		} else {
-			return object.NewError("index out of bounds for character vector")
-		}
-	case object.LOGICAL_VECTOR_OBJ:
-		lv := v.(*object.LogicalVector)
-		if start, end, valid := getIndexBounds(index, lv.Length()); valid {
-			if end == 0 {
-				return lv.Elements[start]
-			} else {
-				return &object.LogicalVector{BaseVector: object.BaseVector{Elements: lv.Elements[start:end]}}
-			}
-		} else {
-			return object.NewError("index out of bounds for logical vector")
-		}
-	default:
-		return object.NewError("invliad index operation for type %s", v.Type())
+	} else {
+		return object.NewError("index out of bounds for vector")
 	}
 }
 

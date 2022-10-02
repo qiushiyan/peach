@@ -17,8 +17,12 @@ func evalNumberInfixExpression(operator string, left object.Object, right object
 		return &object.Number{Value: leftVal / rightVal}
 	case "<":
 		return evalBoolean(leftVal < rightVal)
+	case "<=":
+		return evalBoolean(leftVal <= rightVal)
 	case ">":
 		return evalBoolean(leftVal > rightVal)
+	case ">=":
+		return evalBoolean(leftVal >= rightVal)
 	case "==":
 		return evalBoolean(leftVal == rightVal)
 	case "!=":

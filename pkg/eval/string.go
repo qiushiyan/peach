@@ -13,6 +13,10 @@ func evalStringInfixExpression(operator string, left object.Object, right object
 	switch operator {
 	case "+":
 		return &object.String{Value: leftVal + rightVal}
+	case "==":
+		return evalBoolean(leftVal == rightVal)
+	case "!=":
+		return evalBoolean(leftVal != rightVal)
 	default:
 		return newInfixError(left, operator, right)
 	}
