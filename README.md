@@ -120,13 +120,23 @@ print(keys(q))
 print(values(q))
 ```
 
-    #> {"name": "Q", "age": 0, "functional": true}
+    #> {"functional": true, "name": "Q", "age": 0}
     #> CharacterVector with 3 elements
-    #> ["name", "age", "functional"]
+    #> ["age", "functional", "name"]
     #> Vector with 3 elements
     #> ["Q", 0, true]
 
 ### Control flows
+
+``` q
+for (name in ["Q", "R", "Python"]) {
+  if (name != "Python") {
+    print(Python)
+  }
+}
+```
+
+    #> [34mERROR: identifier not found: Python[0m
 
 ### Functions
 
@@ -135,21 +145,43 @@ arguments and returned from other functions. There is a `return` keyword
 but functions can also use implicit returns.
 
 ``` markdown
-make_adder = fn(x, y = 1, z = 2) {
-  fn(x) {
-    return x + y + z * 2
+map = fn(arr, f) {
+  result = []
+  for (x in arr) {
+    result = append(result, f(x))
   }
+  result
 }
 
-adder = make_adder(1, z = 3)
-adder(1)
+[1, 2, 3] |> map(fn(x) { x * 2 })
+```
+
+A more advanced example
+
+``` markdown
+let reduce = fn(f, seed, arr) {
+    let iter = fn(acc, arr) {
+        if (len(arr) == 0) {
+            return acc
+        }
+        iter(f(acc, head(arr)), tail(arr))
+    }
+
+    iter(seed, arr)
+}
+
+let sum = fn(arr) {
+    reduce(fn(acc, it) { acc + it }, 0, arr)
+}
+
+[1, 2, 3, 4, 5] |> sum
 ```
 
 ## Next steps
 
 - `...` for variadic arguments
 
-- for loops
+- fix `append()` to use copy
 
 - dataframe interface
 

@@ -29,3 +29,10 @@ func (d *Dict) Inspect() string {
 	out.WriteString("}")
 	return out.String()
 }
+func (d *Dict) Keys() []Object {
+	keys := []Object{}
+	for _, pair := range d.Pairs {
+		keys = append(keys, pair.Key)
+	}
+	return keys
+}

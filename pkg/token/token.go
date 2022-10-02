@@ -52,6 +52,7 @@ const (
 	NULL     // null
 	RETURN   // return
 	FOR      // for
+	IN       // IN
 )
 
 type TokenType byte
@@ -73,6 +74,7 @@ var keywords = map[string]TokenType{
 	"null":   NULL,
 	"return": RETURN,
 	"for":    FOR,
+	"in":     IN,
 }
 
 func GetIdentifierType(k string) TokenType {
@@ -165,6 +167,8 @@ func (t TokenType) String() string {
 		return "RETURN"
 	case FOR:
 		return "FOR"
+	case IN:
+		return "IN"
 	}
 	return "UNKNOWN"
 }

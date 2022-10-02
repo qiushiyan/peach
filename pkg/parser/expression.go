@@ -18,7 +18,7 @@ func (p *Parser) parseExpressionStatement() ast.Statement {
 }
 
 func (p *Parser) parseExpression(precedence int) ast.Expression {
-	if p.curTokenIs(token.NEWLINE) {
+	for p.curTokenIs(token.NEWLINE) {
 		p.advanceToken()
 	}
 	prefixFn := p.prefixParseFns[p.curToken.Type]

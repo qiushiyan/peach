@@ -1,6 +1,16 @@
-add = fn(x, y = 1) {
-    x + y
+let reduce = fn(f, seed, arr) {
+	let iter = fn(acc, arr) {
+		if (len(arr) == 0) {
+			return acc
+		}
+		iter(f(acc, head(arr)), tail(arr))
+	}
+
+	iter(seed, arr)
 }
 
-print(add(10))
-print(add(10, y = 5))
+let sum = fn(arr) {
+	reduce(fn(acc, it) { acc + it }, 2, arr)
+}
+
+[1, 2, 3, 4, 5] |> sum

@@ -20,7 +20,6 @@ type IVector interface {
 	Tail(n int) Object
 	Values() []Object
 	Append(objects ...Object) Object
-	Map(func(Object) Object) Object
 	Infix(func(Object, Object) Object, IVector) Object
 }
 
@@ -81,18 +80,6 @@ func (bv *BaseVector) Append(vals ...Object) Object {
 	return NewVector(els)
 }
 
-func (bv *BaseVector) Map(f func(Object) Object) Object {
-	els := []Object{}
-	for _, el := range bv.Elements {
-		val := f(el)
-		if IsError(val) {
-			return val
-		}
-		els = append(els, f(el))
-	}
-	return NewVector(els)
-}
-
 func (bv *BaseVector) Infix(f func(Object, Object) Object, other IVector) Object {
 	var otherVal Object
 	otherLength := other.Length()
@@ -139,7 +126,6 @@ func (v *Vector) Values() []Object { return v.BaseVector.Elements }
 func (v *Vector) Append(objects ...Object) Object {
 	return v.BaseVector.Append(objects...)
 }
-func (v *Vector) Map(f func(Object) Object) Object { return v.BaseVector.Map(f) }
 func (v *Vector) Infix(f func(Object, Object) Object, other IVector) Object {
 	return v.BaseVector.Infix(f, other)
 }
@@ -167,9 +153,7 @@ func (nv *NumericVector) Values() []Object {
 func (nv *NumericVector) Append(objects ...Object) Object {
 	return nv.BaseVector.Append(objects...)
 }
-func (nv *NumericVector) Map(f func(Object) Object) Object {
-	return nv.BaseVector.Map(f)
-}
+
 func (nv *NumericVector) Infix(f func(Object, Object) Object, other IVector) Object {
 	return nv.BaseVector.Infix(f, other)
 }
@@ -197,9 +181,7 @@ func (cv *CharacterVector) Values() []Object {
 func (cv *CharacterVector) Append(objects ...Object) Object {
 	return cv.BaseVector.Append(objects...)
 }
-func (cv *CharacterVector) Map(f func(Object) Object) Object {
-	return cv.BaseVector.Map(f)
-}
+
 func (cv *CharacterVector) Infix(f func(Object, Object) Object, other IVector) Object {
 	return cv.BaseVector.Infix(f, other)
 }
@@ -227,9 +209,7 @@ func (lv *LogicalVector) Values() []Object {
 func (lv *LogicalVector) Append(objects ...Object) Object {
 	return lv.BaseVector.Append(objects...)
 }
-func (lv *LogicalVector) Map(f func(Object) Object) Object {
-	return lv.BaseVector.Map(f)
-}
+
 func (lv *LogicalVector) Infix(f func(Object, Object) Object, other IVector) Object {
 	return lv.BaseVector.Infix(f, other)
 }

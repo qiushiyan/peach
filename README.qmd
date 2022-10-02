@@ -101,6 +101,16 @@ print(values(q))
 ### Control flows
 
 
+```{q}
+for (name in ["Q", "R", "Python"]) {
+  if (name != "Python") {
+    print(Python)
+  }
+}
+```
+
+
+
 ### Functions
 
 Functions in Q are first-class citizens. They can be passed around as arguments and returned from other functions. There is a `return` keyword but functions can also use implicit returns.
@@ -114,13 +124,36 @@ map = fn(arr, f) {
   }
   result
 }
+
+[1, 2, 3] |> map(fn(x) { x * 2 })
+```
+
+A more advanced example
+
+```markdown
+let reduce = fn(f, seed, arr) {
+	let iter = fn(acc, arr) {
+		if (len(arr) == 0) {
+			return acc
+		}
+		iter(f(acc, head(arr)), tail(arr))
+	}
+
+	iter(seed, arr)
+}
+
+let sum = fn(arr) {
+	reduce(fn(acc, it) { acc + it }, 0, arr)
+}
+
+[1, 2, 3, 4, 5] |> sum
 ```
 
 ## Next steps
 
 * `...` for variadic arguments
 
-* for loops
+* fix `append()` to use copy
 
 * dataframe interface
 

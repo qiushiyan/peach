@@ -30,5 +30,6 @@ func (p *Parser) registerAllPrefixParsers() {
 	p.registerPrefix(token.LBRACE, p.parseDictLiteral)
 	p.registerPrefix(token.COLON, p.parseRangePrefixExpression)
 	p.registerPrefix(token.IF, p.parseIfExpression)
+	p.registerPrefix(token.FOR, p.parseForExpression)
 	p.registerPrefix(token.FUNCTION, p.parseFunction)
 }
