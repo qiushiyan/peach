@@ -28,6 +28,7 @@ type BaseVector struct {
 	Elements []Object
 }
 
+func (bv *BaseVector) Type() ObjectType { return VECTOR_OBJ }
 func (bv *BaseVector) Inspect(dtype string) string {
 	vectorLength := len(bv.Elements)
 	var out bytes.Buffer
@@ -105,6 +106,7 @@ func (bv *BaseVector) Infix(f func(Object, Object) Object, other IVector) Object
 	for i, el := range bv.Elements {
 		var val Object
 		if otherLength == 1 {
+			// recyle length one vector
 			val = f(el, otherVal)
 		} else {
 			val = f(el, other.Values()[i])
@@ -148,7 +150,10 @@ type NumericVector struct {
 
 func (nv *NumericVector) Type() ObjectType { return VECTOR_OBJ }
 func (nv *NumericVector) Inspect() string  { return nv.BaseVector.Inspect("Numeric") }
-func (nv *NumericVector) Length() int      { return nv.BaseVector.Length() }
+func (nv *NumericVector) New(elements []Object) IVector {
+	return &NumericVector{BaseVector{elements}}
+}
+func (nv *NumericVector) Length() int { return nv.BaseVector.Length() }
 func (nv *NumericVector) Head(n int) Object {
 	return &NumericVector{BaseVector{nv.BaseVector.Head(n)}}
 }
@@ -175,7 +180,10 @@ type CharacterVector struct {
 
 func (cv *CharacterVector) Type() ObjectType { return VECTOR_OBJ }
 func (cv *CharacterVector) Inspect() string  { return cv.BaseVector.Inspect("Character") }
-func (cv *CharacterVector) Length() int      { return cv.BaseVector.Length() }
+func (cv *CharacterVector) New(elements []Object) IVector {
+	return &CharacterVector{BaseVector{elements}}
+}
+func (cv *CharacterVector) Length() int { return cv.BaseVector.Length() }
 func (cv *CharacterVector) Head(n int) Object {
 	return &CharacterVector{BaseVector{cv.BaseVector.Head(n)}}
 }
@@ -202,7 +210,10 @@ type LogicalVector struct {
 
 func (lv *LogicalVector) Type() ObjectType { return VECTOR_OBJ }
 func (lv *LogicalVector) Inspect() string  { return lv.BaseVector.Inspect("Logical") }
-func (lv *LogicalVector) Length() int      { return lv.BaseVector.Length() }
+func (lv *LogicalVector) New(elements []Object) IVector {
+	return &LogicalVector{BaseVector{elements}}
+}
+func (lv *LogicalVector) Length() int { return lv.BaseVector.Length() }
 func (lv *LogicalVector) Head(n int) Object {
 	return &LogicalVector{BaseVector{lv.BaseVector.Head(n)}}
 }

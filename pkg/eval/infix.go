@@ -1,6 +1,8 @@
 package eval
 
-import "github.com/qiushiyan/qlang/pkg/object"
+import (
+	"github.com/qiushiyan/qlang/pkg/object"
+)
 
 func evalInfixExpression(operator string, left object.Object, right object.Object) object.Object {
 	switch {
@@ -12,6 +14,20 @@ func evalInfixExpression(operator string, left object.Object, right object.Objec
 		left := left.(object.IVector)
 		right := right.(object.IVector)
 		return evalVectorInfixExpression(operator, left, right)
+	// the next few cases enable infix operations between vectors and scalars
+	case left.Type() == object.NUMBER_OBJ && right.Type() == object.VECTOR_OBJ:
+		// left and right are swapped because BaseVector.Infix() checks length for the second argument
+		return evalVectorInfixExpression(operator, right.(object.IVector), newLengthOneVector(left))
+	case left.Type() == object.VECTOR_OBJ && right.Type() == object.NUMBER_OBJ:
+		return evalVectorInfixExpression(operator, left.(object.IVector), newLengthOneVector(right))
+	case left.Type() == object.STRING_OBJ && right.Type() == object.VECTOR_OBJ:
+		return evalVectorInfixExpression(operator, right.(object.IVector), newLengthOneVector(left))
+	case left.Type() == object.VECTOR_OBJ && right.Type() == object.STRING_OBJ:
+		return evalVectorInfixExpression(operator, left.(object.IVector), newLengthOneVector(right))
+	case left.Type() == object.BOOLEAN_OBJ && right.Type() == object.VECTOR_OBJ:
+		return evalVectorInfixExpression(operator, right.(object.IVector), newLengthOneVector(left))
+	case left.Type() == object.VECTOR_OBJ && right.Type() == object.BOOLEAN_OBJ:
+		return evalVectorInfixExpression(operator, left.(object.IVector), newLengthOneVector(right))
 	case operator == "==":
 		return evalBoolean(left == right)
 	case operator == "!=":
@@ -25,4 +41,17 @@ func evalInfixExpression(operator string, left object.Object, right object.Objec
 
 func newInfixError(left object.Object, operator string, right object.Object) object.Object {
 	return object.NewError("invalid operation %s %s %s", left.Type(), operator, right.Type())
+}
+
+func newLengthOneVector(obj object.Object) object.IVector {
+	switch obj.(type) {
+	case *object.Number:
+		return &object.NumericVector{BaseVector: object.BaseVector{Elements: []object.Object{obj}}}
+	case *object.String:
+		return &object.CharacterVector{BaseVector: object.BaseVector{Elements: []object.Object{obj}}}
+	case *object.Boolean:
+		return &object.LogicalVector{BaseVector: object.BaseVector{Elements: []object.Object{obj}}}
+	default:
+		return &object.Vector{BaseVector: object.BaseVector{Elements: []object.Object{obj}}}
+	}
 }

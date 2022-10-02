@@ -81,13 +81,30 @@ print([1, 2, 3] + [4, 5, 6])
 print([1, 2, 3] * [4, 5, 6])
 ```
 
-    #> [34mERROR: invalid operation NUMERIC_VECTOR + NUMERIC_VECTOR[0m
+    #> NumericVector with 3 elements
+    #> [5, 7, 9]
+    #> NumericVector with 3 elements
+    #> [4, 10, 18]
 
 ``` q
 ["hello ", "good "] + ["world", "morning"]
 ```
 
-    #> [34mERROR: invalid operation NUMERIC_VECTOR + NUMERIC_VECTOR[0m
+    #> CharacterVector with 2 elements
+    #> ["hello world", "good morning"]
+
+Vector elements are recycled only if it has lenght 1 or is a scalar of
+primitive type.
+
+``` q
+print([1, 2, 3] * 2)
+print([1, 2, 3] + [4])
+```
+
+    #> NumericVector with 3 elements
+    #> [2, 4, 6]
+    #> NumericVector with 3 elements
+    #> [5, 6, 7]
 
 ### Dictionaries
 
@@ -103,9 +120,9 @@ print(keys(q))
 print(values(q))
 ```
 
-    #> {"functional": true, "name": "Q", "age": 0}
+    #> {"name": "Q", "age": 0, "functional": true}
     #> CharacterVector with 3 elements
-    #> ["functional", "name", "age"]
+    #> ["name", "age", "functional"]
     #> Vector with 3 elements
     #> ["Q", 0, true]
 

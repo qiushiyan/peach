@@ -78,7 +78,12 @@ print([1, 2, 3] * [4, 5, 6])
 ["hello ", "good "] + ["world", "morning"]
 ```
 
+Vector elements are recycled only if it has lenght 1 or is a scalar of primitive type.
 
+```{q}
+print([1, 2, 3] * 2)
+print([1, 2, 3] + [4])
+```
 
 ### Dictionaries
 
