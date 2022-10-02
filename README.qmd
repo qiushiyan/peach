@@ -5,6 +5,7 @@ embed-resources: true
 knitr:
     opts_chunk:
         comment: "#>"
+        collapse: true
 ---
 
 ```{r}
@@ -91,7 +92,7 @@ print(values(q))
 Functions in Q are first-class citizens. They can be passed around as arguments and returned from other functions. There is a `return` keyword but functions can also use implicit returns.
 
 
-```{q}
+```markdown
 make_adder = fn(x, y = 1, z = 2) {
   fn(x) {
     return x + y + z * 2
