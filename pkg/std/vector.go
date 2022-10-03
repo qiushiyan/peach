@@ -1,6 +1,21 @@
 package std
 
-import "github.com/qiushiyan/qlang/pkg/object"
+import (
+	"github.com/qiushiyan/qlang/pkg/object"
+)
+
+func vectorCreate(env *object.Env, args ...object.Object) object.Object {
+	num, ok := args[0].(*object.Number)
+	if !ok {
+		return object.NewError("invalid first argument in function `vector()`, must be a non-negative number, got %s", num.Type())
+	}
+	if num.Value < 0 {
+		return object.NewError("invalid first argument in function `vector()`, must be a non-negative number, got %f", num.Value)
+	}
+
+	vals := make([]object.Object, int(num.Value))
+	return &object.Vector{BaseVector: object.BaseVector{Elements: vals}}
+}
 
 func vectorHead(env *object.Env, args ...object.Object) object.Object {
 	var n int

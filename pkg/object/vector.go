@@ -36,10 +36,14 @@ type BaseVector struct {
 func (bv *BaseVector) Type() ObjectType        { return VECTOR_OBJ }
 func (bv *BaseVector) ElementType() ObjectType { return NULL_OBJ }
 func (bv *BaseVector) Inspect() string {
+	// check for empty vectors created by std vector(num)
 	vectorLength := len(bv.Elements)
 	var out bytes.Buffer
 	elements := []string{}
 	for i, el := range bv.Elements {
+		if el == nil {
+			return "empty vector with " + fmt.Sprintf("%d", i) + " filled elements"
+		}
 		if i <= max_display {
 			elements = append(elements, el.Inspect())
 		}
@@ -74,12 +78,17 @@ func (bv *BaseVector) Head(n int) []Object {
 }
 
 func (bv *BaseVector) Tail(n int) []Object {
+	if n > len(bv.Elements) {
+		n = len(bv.Elements)
+	}
 	return bv.Elements[len(bv.Elements)-n:]
 }
 
 // append objects to vector, flattening if necessary
 func (bv *BaseVector) Append(vals ...Object) Object {
-	els := bv.Elements
+	els := make([]Object, len(bv.Elements))
+	copy(els, bv.Elements)
+
 	for _, object := range vals {
 		switch obj := object.(type) {
 		case IVector:
@@ -87,7 +96,6 @@ func (bv *BaseVector) Append(vals ...Object) Object {
 		default:
 			els = append(els, obj)
 		}
-
 	}
 	return NewVector(els)
 }

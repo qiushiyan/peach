@@ -1,7 +1,8 @@
 map = fn(arr, f) {
-    result = []
-    for (i in arr) {
-        result = append(result, f(i))
+    arr_length = len(arr)
+    result = vector(len(arr))
+    for (i in 1:arr_length) {
+        result[i] = f(arr[i])
     }
     result
 }

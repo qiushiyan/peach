@@ -17,4 +17,6 @@ func RegisterStd() {
 	RegisterBuiltin("append", vectorAppend, 2)
 	RegisterBuiltin("keys", dictKeys, 1)
 	RegisterBuiltin("values", dictValues, 1)
+	RegisterBuiltin("random", random, 0)
+	RegisterBuiltin("vector", vectorCreate, 1)
 }

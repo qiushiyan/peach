@@ -117,6 +117,8 @@ Elements are recycled only if it has lenght 1 or is a scalar.
 
     #> [34mERROR: Incompatible vector lengths, left=3 and right=2[0m
 
+Boolean indexing
+
 ### Dictionaries
 
 You can create a hash table structure in Q called a dictionary with a
@@ -134,11 +136,11 @@ print(keys(q))
 print(values(q))
 ```
 
-    #> {"name": "Q", "age": 0, "functional": true}
+    #> {"age": 0, "functional": true, "name": "Q"}
     #> CharacterVector with 3 elements
-    #> ["name", "age", "functional"]
+    #> ["functional", "name", "age"]
     #> Vector with 3 elements
-    #> ["Q", 1, true]
+    #> [1, true, "Q"]
 
 ### Control flows
 
@@ -159,50 +161,62 @@ for (name in ["Q", "R", "Python"]) {
     #> "R"
     #> "I don't like Python"
 
+Note that `for` and `if` blocks have their own scopes. So the following
+code will not work as expected:
+
+``` q
+result = []
+for (i in 1:3) {
+  result = append(result, i)
+}
+result
+```
+
+    #> []
+
+The alternative is to use vectorized functions when possible, and if not
+create an empty vector with `vector()` and then start filling in the
+elements with indexing.
+
+``` q
+result = vector(3)
+for (i in 1:3) {
+  result[i] = i
+}
+result
+```
+
+    #> [1, 2, 3]
+
 ### Functions
 
 Functions in Q are first-class citizens. They can be passed around as
 arguments and returned from other functions. There is a `return` keyword
-but functions can also use implicit returns.
+but functions can also use implicit returns. Here we define a `map`
+function that takes a function and a vector and applies the function to
+each element of the vector.
 
-``` markdown
+``` q
 map = fn(arr, f) {
-  result = []
-  for (x in arr) {
-    result = append(result, f(x))
-  }
-  result
-}
-
-[1, 2, 3] |> map(fn(x) { x * 2 })
-```
-
-A more advanced example
-
-``` markdown
-let reduce = fn(f, seed, arr) {
-    let iter = fn(acc, arr) {
-        if (len(arr) == 0) {
-            return acc
-        }
-        iter(f(acc, head(arr)), tail(arr))
+    arr_length = len(arr)
+    result = vector(len(arr))
+    for (i in 1:arr_length) {
+        result[i] = f(arr[i])
     }
-
-    iter(seed, arr)
+    result
 }
 
-let sum = fn(arr) {
-    reduce(fn(acc, it) { acc + it }, 0, arr)
-}
-
-[1, 2, 3, 4, 5] |> sum
+[1, 2, 3] |> map(fn(x) x * 2)
 ```
+
+    #> [2, 4, 6]
+
+Of course the preferred the way to to double a vector is to simply use
+the vectorized operator `*`.
 
 ## Next steps
 
 - `...` for variadic arguments
-
-- fix `append()` to use copy
 
 - index tests for vector and dict
 

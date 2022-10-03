@@ -17,7 +17,7 @@ func evalIndexExpression(node *ast.IndexExpression, env *object.Env) object.Obje
 	switch l := left.(type) {
 	case object.IVector:
 		switch i := index.(type) {
-		case *object.Number, *object.Range:
+		case *object.Number, *object.Range, object.IVector:
 			return evalVectorIndexExpression(l, i)
 		default:
 			return object.NewError("index must be a number or range, got %s", i.Type())
@@ -48,9 +48,45 @@ func evalVectorIndexExpression(vec object.IVector, index object.Object) object.O
 			return object.NewError("index out of bounds for vector of length %d, got %d:%d", vec.Length(), index.Start, index.End)
 		}
 		return vec.Slice(start, end)
+	case object.IVector:
+		return evalVectorIndexVectorExpression(vec, index)
 	default:
-		return object.NewError("index must be a number or range, got %s", index.Type())
+		return object.NewError("index must be one of number, range and vector, got %s", index.Type())
 	}
+}
+
+func evalVectorIndexVectorExpression(vec object.IVector, index object.IVector) object.Object {
+	if index.Length() == 0 {
+		return &object.Error{Message: "index vector can not be empty"}
+	}
+	if index.Length() > vec.Length() {
+		return object.NewError("index vector length can not be greater than vector length, got %d > %d", index.Length(), vec.Length())
+	}
+	var values []object.Object
+	switch index := index.(type) {
+	case *object.NumericVector:
+		for _, i := range index.Values() {
+			idx := int(i.(*object.Number).Value)
+			if idx := idx - 1; idx < vec.Length() && idx >= 0 {
+				values = append(values, vec.Values()[idx])
+			} else {
+				return object.NewError("index out of bounds for vector of length %d, got %d", vec.Length(), idx)
+			}
+		}
+	case *object.LogicalVector:
+		if index.Length() != vec.Length() {
+			return object.NewError("boolean indexing must use a vector of same size, got %d != %d", index.Length(), vec.Length())
+		}
+		for idx, val := range vec.Values() {
+			b := index.Values()[idx].(*object.Boolean).Value
+			if b {
+				values = append(values, val)
+			}
+		}
+	default:
+		return object.NewError("index vector must be a numerical or logical vector, got %s", index.ElementType())
+	}
+	return object.NewVector(values)
 }
 
 // start, end, valid
