@@ -28,9 +28,9 @@ func evalBangOperatorExpression(right object.Object) object.Object {
 		return object.FALSE
 	case object.FALSE:
 		return object.TRUE
-	// !null is still null
+	// !null is still NULL
 	case object.NULL:
-		return object.TRUE
+		return object.NULL
 	default:
 		// !nonzero number = false
 		// !zero number = true

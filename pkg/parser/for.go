@@ -17,7 +17,6 @@ func (p *Parser) parseForExpression() ast.Expression {
 	}
 	p.advanceToken()
 	expr.IterValues = p.parseExpression(LOWEST)
-
 	if !p.expectNextToken(token.RPAREN) {
 		return nil
 	}

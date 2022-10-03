@@ -21,3 +21,16 @@ func TestArrayLiterals(t *testing.T) {
 	testNumberObject(t, result.Elements[1], 4)
 	testNumberObject(t, result.Elements[2], 6)
 }
+
+func TestEmptyVector(t *testing.T) {
+	input := "[]"
+	evaluated := testEval(input)
+	result, ok := evaluated.(*object.Vector)
+	if !ok {
+		t.Fatalf("object is not cVector. got=%T (%+v)", evaluated, evaluated)
+	}
+	if len(result.Elements) != 0 {
+		t.Fatalf("vector has wrong num of elements. got=%d",
+			len(result.Elements))
+	}
+}

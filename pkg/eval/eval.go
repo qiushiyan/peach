@@ -7,6 +7,7 @@ import (
 	"github.com/qiushiyan/qlang/pkg/lexer"
 	"github.com/qiushiyan/qlang/pkg/object"
 	"github.com/qiushiyan/qlang/pkg/parser"
+	"github.com/qiushiyan/qlang/pkg/std"
 )
 
 func Eval(node ast.Node, env *object.Env) object.Object {
@@ -107,6 +108,7 @@ func testEval(input string) object.Object {
 	p := parser.New(l)
 	env := object.NewEnv()
 	program := p.ParseProgram()
+	std.RegisterStd()
 	return Eval(program, env)
 }
 
