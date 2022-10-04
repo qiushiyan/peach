@@ -29,3 +29,48 @@ func evalRangeExpression(node *ast.RangeExpression, env *object.Env) object.Obje
 	}
 	return &object.Range{Start: start, End: end}
 }
+
+// validate a range expression and return the range object
+func checkRange(node *ast.RangeExpression, env *object.Env, isBounded bool) object.Object {
+	var iterStart, iterEnd float64
+	start := checkRangeEnd(node.Start, env, isBounded)
+	switch start := start.(type) {
+	case *object.Error:
+		return start
+	case float64:
+		iterStart = start
+	}
+	end := checkRangeEnd(node.End, env, isBounded)
+	switch end := end.(type) {
+	case *object.Error:
+		return end
+	case float64:
+		iterEnd = end
+	}
+
+	return &object.Range{Start: int(iterStart), End: int(iterEnd) + 1} // +1 here for 1-based indexing
+}
+
+// validate range.Start and range.End
+// return a go float or object.Error
+func checkRangeEnd(expr ast.Expression, env *object.Env, isBounded bool) interface{} {
+	var num float64
+	if x, ok := expr.(*ast.NumberLiteral); ok {
+		if isBounded {
+			if x.Value == -1 {
+				return &object.Error{Message: "range start and end must be specified in for loop"}
+			}
+		}
+		num = x.Value
+	} else {
+		x := Eval(expr, env)
+		if object.IsError(x) {
+			return x
+		}
+		if x.Type() != object.NUMBER_OBJ {
+			return &object.Error{Message: "range start and end must be number in for loop"}
+		}
+		num = x.(*object.Number).Value
+	}
+	return num
+}

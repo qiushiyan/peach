@@ -71,3 +71,12 @@ func vectorAppend(env *object.Env, args ...object.Object) object.Object {
 		return object.NewError("invalid first argument in `append()`, must be a vector, got %s", args[0].Type())
 	}
 }
+
+func vectorConvert(env *object.Env, args ...object.Object) object.Object {
+	switch arg := args[0].(type) {
+	case object.IVector:
+		return arg
+	default:
+		return object.NewError("invalid first argument in `convert()`, must be either one of vector, range or dict, got %s", args[0].Type())
+	}
+}

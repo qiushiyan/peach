@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	PROMPT = "\U0000279C  "
+	PROMPT = "Q \U0000279C  "
 )
 
 type Config struct {

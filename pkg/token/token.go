@@ -12,23 +12,24 @@ const (
 	STRING
 
 	// Operators
-	ASSIGN // =
-	PIPE   // |>
-	PLUS   // +
-	MINUS  // -
-	DIV    // /
-	BANG   // !
-	MUL    // *
-	GT     // >
-	LT     // <
-	GTE    // >=
-	LTE    // <=
-	EQ     // ==
-	NOT_EQ // !=
-	OR     // ||
-	VOR    // |
-	AND    // &&
-	VAND   // &
+	ASSIGN       // =
+	ASSIGN_ARROW // <-
+	PIPE         // |>
+	PLUS         // +
+	MINUS        // -
+	DIV          // /
+	BANG         // !
+	MUL          // *
+	GT           // >
+	LT           // <
+	GTE          // >=
+	LTE          // <=
+	EQ           // ==
+	NOT_EQ       // !=
+	OR           // ||
+	VOR          // |
+	AND          // &&
+	VAND         // &
 
 	// Delimiters
 	COMMA     // ,
@@ -97,6 +98,8 @@ func (t TokenType) String() string {
 		return "STRING"
 	case ASSIGN:
 		return "ASSIGN"
+	case ASSIGN_ARROW:
+		return "ASSIGN_ARROW"
 	case PIPE:
 		return "PIPE"
 	case PLUS:

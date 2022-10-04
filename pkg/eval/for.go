@@ -9,38 +9,11 @@ func evalForExpression(node *ast.ForExpression, env *object.Env) object.Object {
 	var iterValues object.Object
 	switch iter := node.IterValues.(type) {
 	case *ast.RangeExpression:
-		var start, end float64
-		if iterStart, ok := iter.Start.(*ast.NumberLiteral); ok {
-			if iterStart.Value == -1 {
-				return &object.Error{Message: "range start and end must be specified in for loop"}
-			}
-			start = iterStart.Value
-		} else {
-			iterStart := Eval(iter.Start, env)
-			if object.IsError(iterStart) {
-				return iterStart
-			}
-			if iterStart.Type() != object.NUMBER_OBJ {
-				return &object.Error{Message: "range start and end must be number in for loop"}
-			}
-			start = iterStart.(*object.Number).Value
+		result := checkRange(iter, env, true)
+		if object.IsError(result) {
+			return result
 		}
-		if iterEnd, ok := iter.End.(*ast.NumberLiteral); ok {
-			if iterEnd.Value == -1 {
-				return &object.Error{Message: "range start and end must be specified in for loop"}
-			}
-			end = iterEnd.Value
-		} else {
-			iterEnd := Eval(iter.End, env)
-			if object.IsError(iterEnd) {
-				return iterEnd
-			}
-			if iterEnd.Type() != object.NUMBER_OBJ {
-				return &object.Error{Message: "range start and end must be number in for loop"}
-			}
-			end = iterEnd.(*object.Number).Value
-		}
-		iterValues = &object.Range{Start: int(start), End: int(end) + 1} // +1 here for 1-based indexing
+		iterValues = result
 	default:
 		iterValues = Eval(node.IterValues, env)
 	}

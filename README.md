@@ -4,6 +4,19 @@ Q Progrmaming Language
 Q is a toy programming language with a mix of R and Python’s syntax. It
 was written in Go and inspired by <https://interpreterbook.com/>.
 
+## Assignments
+
+Both `=` and `<-` can be used for assignment. Variable names can contain
+letters, numbers, and underscores, but must start with a letter.
+
+``` q
+x = 1
+y <- x
+x + y
+```
+
+    #> 2
+
 ## Data structures
 
 ### Primitives
@@ -76,8 +89,8 @@ print(head(x, 10))
     #> NumericVector with 10 elements
     #> [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-Inspired by R, operators are vectorized and can be applied directly to
-vectors.
+Inspired by R, operators are vectorized element-wise. Or in numpy’s
+terms, they are “broadcasted”.
 
 ``` q
 [1, 2, 3] + [4, 5, 6]
@@ -117,7 +130,14 @@ Elements are recycled only if it has lenght 1 or is a scalar.
 
     #> [34mERROR: Incompatible vector lengths, left=3 and right=2[0m
 
-Boolean indexing
+Boolean indexing works as well
+
+``` q
+s = random(10, 1, 3)
+s[s > 1.5]
+```
+
+    #> [2.2093205759592394, 2.881018176090025, 2.3291201064369806, 1.8754283743739604, 1.8492749941425313, 2.373646145734219, 1.6018237211705741]
 
 ### Dictionaries
 
@@ -136,11 +156,11 @@ print(keys(q))
 print(values(q))
 ```
 
-    #> {"age": 0, "functional": true, "name": "Q"}
+    #> {"name": "Q", "age": 0, "functional": true}
     #> CharacterVector with 3 elements
-    #> ["functional", "name", "age"]
+    #> ["name", "age", "functional"]
     #> Vector with 3 elements
-    #> [1, true, "Q"]
+    #> [true, "Q", 1]
 
 ### Control flows
 
@@ -217,6 +237,8 @@ the vectorized operator `*`.
 ## Next steps
 
 - `...` for variadic arguments
+
+- fix `append()` to use copy
 
 - index tests for vector and dict
 

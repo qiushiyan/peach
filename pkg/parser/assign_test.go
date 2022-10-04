@@ -15,7 +15,7 @@ func TestAssign(t *testing.T) {
 		expectedValue      interface{}
 	}{
 		{"x = 5", "x", 5.0},
-		{"y = true;", "y", true},
+		{"y <- true;", "y", true},
 		{"foobar = y;", "foobar", "y"},
 	}
 

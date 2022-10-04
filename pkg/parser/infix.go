@@ -6,21 +6,26 @@ import (
 )
 
 var precedences = map[token.TokenType]int{
-	token.ASSIGN:   ASSIGN,
-	token.EQ:       EQUALS,
-	token.NOT_EQ:   EQUALS,
-	token.LT:       LESSGREATER,
-	token.LTE:      LESSGREATER,
-	token.GT:       LESSGREATER,
-	token.GTE:      LESSGREATER,
-	token.PLUS:     SUM,
-	token.MINUS:    SUM,
-	token.DIV:      PRODUCT,
-	token.MUL:      PRODUCT,
-	token.PIPE:     PIPE,
-	token.COLON:    RANGE,
-	token.LPAREN:   CALL,
-	token.LBRACKET: INDEX,
+	token.ASSIGN:       ASSIGN,
+	token.ASSIGN_ARROW: ASSIGN,
+	token.EQ:           EQUALS,
+	token.NOT_EQ:       EQUALS,
+	token.AND:          LESSGREATER,
+	token.VAND:         LESSGREATER,
+	token.OR:           LESSGREATER,
+	token.VOR:          LESSGREATER,
+	token.LT:           LESSGREATER,
+	token.LTE:          LESSGREATER,
+	token.GT:           LESSGREATER,
+	token.GTE:          LESSGREATER,
+	token.PLUS:         SUM,
+	token.MINUS:        SUM,
+	token.DIV:          PRODUCT,
+	token.MUL:          PRODUCT,
+	token.PIPE:         PIPE,
+	token.COLON:        RANGE,
+	token.LPAREN:       CALL,
+	token.LBRACKET:     INDEX,
 }
 
 func (p *Parser) registerAllInfixParsers() {
@@ -42,6 +47,7 @@ func (p *Parser) registerAllInfixParsers() {
 	p.registerInfix(token.VAND, p.parseInfixExpression)
 	// assignment
 	p.registerInfix(token.ASSIGN, p.parseAssignExpression)
+	p.registerInfix(token.ASSIGN_ARROW, p.parseAssignExpression)
 	// function call
 	p.registerInfix(token.LPAREN, p.parseCallExpression)
 	p.registerInfix(token.PIPE, p.parseInfixExpression)

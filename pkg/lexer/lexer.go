@@ -28,7 +28,7 @@ func (l *Lexer) NextToken() token.Token {
 
 	switch l.ch {
 	case '=':
-		t = l.either('=', token.EQ, token.ASSIGN)
+		t = l.either(newTokenChoice('=', token.EQ), token.ASSIGN)
 	case '+':
 		t = l.token(token.PLUS)
 	case '-':
@@ -38,31 +38,27 @@ func (l *Lexer) NextToken() token.Token {
 	case '/':
 		t = l.token(token.DIV)
 	case '!':
-		t = l.either('=', token.NOT_EQ, token.BANG)
+		t = l.either(newTokenChoice('=', token.NOT_EQ), token.BANG)
 	case '>':
-		t = l.either('=', token.GTE, token.GT)
+		t = l.either(newTokenChoice('=', token.GTE), token.GT)
 	case '<':
-		t = l.either('=', token.LTE, token.LT)
+		t = l.either(
+			map[rune]token.TokenType{
+				'=': token.LTE,
+				'-': token.ASSIGN_ARROW,
+			},
+			token.LT,
+		)
 	case '&':
-		t = l.either('&', token.AND, token.VAND)
+		t = l.either(newTokenChoice('&', token.AND), token.VAND)
 	case '|':
-		p := l.s.Pos()
-		switch l.s.Peek() {
-		case '|':
-			t.Type = token.OR
-			t.Literal = "||"
-			t.Col = p.Column + 1
-			t.Line = p.Line
-			l.readRune()
-		case '>':
-			t.Type = token.PIPE
-			t.Literal = "|>"
-			t.Col = p.Column + 1
-			t.Line = p.Line
-			l.readRune()
-		default:
-			t = l.token(token.VOR)
-		}
+		t = l.either(
+			map[rune]token.TokenType{
+				'|': token.OR,
+				'>': token.PIPE,
+			},
+			token.VOR,
+		)
 	case ',':
 		t = l.token(token.COMMA)
 	case ':':
@@ -134,16 +130,24 @@ func (l *Lexer) token(t token.TokenType) token.Token {
 	return token.Token{Type: t, Literal: lit, Line: p.Line, Col: p.Column}
 }
 
-func (l *Lexer) either(what rune, then token.TokenType, otherwise token.TokenType) token.Token {
+type TokenChoice map[rune]token.TokenType
+
+func newTokenChoice(what rune, then token.TokenType) TokenChoice {
+	return map[rune]token.TokenType{what: then}
+}
+
+func (l *Lexer) either(choice TokenChoice, otherwise token.TokenType) token.Token {
 	p := l.s.Pos()
 	lit := l.s.TokenText()
 	col := p.Column
-	if l.s.Peek() == what {
-		l.readRune()
-		lit += l.s.TokenText()
-		col += 1
-		return token.Token{Type: then, Literal: lit, Line: p.Line, Col: col}
-	} else {
-		return token.Token{Type: otherwise, Literal: lit, Line: p.Line, Col: col}
+
+	for what, then := range choice {
+		if l.s.Peek() == what {
+			l.readRune()
+			lit += l.s.TokenText()
+			col += 1
+			return token.Token{Type: then, Literal: lit, Line: p.Line, Col: col}
+		}
 	}
+	return token.Token{Type: otherwise, Literal: lit, Line: p.Line, Col: col}
 }
