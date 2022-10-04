@@ -31,7 +31,7 @@ func evalRangeExpression(node *ast.RangeExpression, env *object.Env) object.Obje
 }
 
 // validate a range expression and return the range object
-func checkRange(node *ast.RangeExpression, env *object.Env, isBounded bool) object.Object {
+func CheckRange(node *ast.RangeExpression, env *object.Env, isBounded bool) object.Object {
 	var iterStart, iterEnd float64
 	start := checkRangeEnd(node.Start, env, isBounded)
 	switch start := start.(type) {

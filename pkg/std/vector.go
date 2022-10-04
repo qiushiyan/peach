@@ -76,6 +76,12 @@ func vectorConvert(env *object.Env, args ...object.Object) object.Object {
 	switch arg := args[0].(type) {
 	case object.IVector:
 		return arg
+	case *object.Range:
+		results := make([]object.Object, arg.End-arg.Start+1)
+		for i := arg.Start; i <= arg.End; i++ {
+			results[i-arg.Start] = &object.Number{Value: float64(i)}
+		}
+		return object.NewVector(results)
 	default:
 		return object.NewError("invalid first argument in `convert()`, must be either one of vector, range or dict, got %s", args[0].Type())
 	}

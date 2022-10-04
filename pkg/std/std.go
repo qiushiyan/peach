@@ -9,7 +9,7 @@ func RegisterBuiltin(name string, fun object.BuiltinFunction, paramsNum int) {
 	Builtins[name] = &object.Builtin{Fn: fun, RequiredParametersNum: paramsNum}
 }
 
-func RegisterStd() {
+func Register() {
 	RegisterBuiltin("len", length, 1)
 	RegisterBuiltin("print", print, 1)
 	RegisterBuiltin("head", vectorHead, 1)

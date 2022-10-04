@@ -9,7 +9,7 @@ func evalForExpression(node *ast.ForExpression, env *object.Env) object.Object {
 	var iterValues object.Object
 	switch iter := node.IterValues.(type) {
 	case *ast.RangeExpression:
-		result := checkRange(iter, env, true)
+		result := CheckRange(iter, env, true)
 		if object.IsError(result) {
 			return result
 		}

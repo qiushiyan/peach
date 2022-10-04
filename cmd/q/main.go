@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	std.RegisterStd()
+	std.Register()
 	if len(os.Args) < 2 {
 		// repl
 		user, err := user.Current()
