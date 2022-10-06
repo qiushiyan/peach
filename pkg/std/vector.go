@@ -14,6 +14,9 @@ func vectorCreate(env *object.Env, args ...object.Object) object.Object {
 	}
 
 	vals := make([]object.Object, int(num.Value))
+	for i := 0; i < int(num.Value); i++ {
+		vals[i] = object.NULL
+	}
 	return &object.Vector{BaseVector: object.BaseVector{Elements: vals}}
 }
 
@@ -77,6 +80,9 @@ func vectorConvert(env *object.Env, args ...object.Object) object.Object {
 	case object.IVector:
 		return arg
 	case *object.Range:
+		if arg.Start == -1 || arg.End == -1 {
+			return object.NewError("invalid range in `as_vector()`, must be a finite range")
+		}
 		results := make([]object.Object, arg.End-arg.Start+1)
 		for i := arg.Start; i <= arg.End; i++ {
 			results[i-arg.Start] = &object.Number{Value: float64(i)}

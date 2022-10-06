@@ -10,6 +10,10 @@ func evalInfixExpression(operator string, left object.Object, right object.Objec
 		return evalNumberInfixExpression(operator, left, right)
 	case left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ:
 		return evalStringInfixExpression(operator, left, right)
+	case left.Type() == object.VECTOR_OBJ && right.Type() == object.VECTOR_OBJ:
+		left := left.(object.IVector)
+		right := right.(object.IVector)
+		return evalVectorInfixExpression(operator, left, right)
 	// the next few cases enable infix operations between vectors and scalars
 	case left.Type() == object.NUMBER_OBJ && right.Type() == object.VECTOR_OBJ:
 		// left and right are swapped because BaseVector.Infix() checks length for the second argument
@@ -24,6 +28,10 @@ func evalInfixExpression(operator string, left object.Object, right object.Objec
 		return evalVectorInfixExpression(operator, right.(object.IVector), newLengthOneVector(left))
 	case left.Type() == object.VECTOR_OBJ && right.Type() == object.BOOLEAN_OBJ:
 		return evalVectorInfixExpression(operator, left.(object.IVector), newLengthOneVector(right))
+	case left.Type() == object.VECTOR_OBJ && right.Type() == object.NULL_OBJ:
+		return evalVectorInfixExpression(operator, left.(object.IVector), newLengthOneVector(right))
+	case left.Type() == object.NULL_OBJ && right.Type() == object.VECTOR_OBJ:
+		return evalVectorInfixExpression(operator, right.(object.IVector), newLengthOneVector(left))
 	case operator == "&":
 		if left.Type() != object.VECTOR_OBJ || right.Type() != object.VECTOR_OBJ {
 			return object.NewError("& should be used for vector comparison, got %s & %s", left.Type(), right.Type())
@@ -34,13 +42,11 @@ func evalInfixExpression(operator string, left object.Object, right object.Objec
 			return object.NewError("| should be used for vector comparison, got %s | %", left.Type(), right.Type())
 		}
 		return evalVectorInfixExpression("||", left.(object.IVector), right.(object.IVector))
-	case left.Type() == object.VECTOR_OBJ && right.Type() == object.VECTOR_OBJ:
-		left := left.(object.IVector)
-		right := right.(object.IVector)
-		return evalVectorInfixExpression(operator, left, right)
+
 	case operator == "==":
 		return evalBoolean(left == right)
 	case operator == "!=":
+
 		return evalBoolean(left != right)
 	case operator == "&&":
 		return evalBoolean(left == object.TRUE && right == object.TRUE)
@@ -68,4 +74,25 @@ func newLengthOneVector(obj object.Object) object.IVector {
 	default:
 		return &object.Vector{BaseVector: object.BaseVector{Elements: []object.Object{obj}}}
 	}
+}
+
+func checkTypes(tests []object.ObjectType, expected []object.ObjectType) bool {
+	if len(tests) != len(expected) {
+		return false
+	}
+	for _, test := range tests {
+		if !contains(expected, test) {
+			return false
+		}
+	}
+	return true
+}
+
+func contains(expected []object.ObjectType, test object.ObjectType) bool {
+	for _, e := range expected {
+		if test == e {
+			return true
+		}
+	}
+	return false
 }

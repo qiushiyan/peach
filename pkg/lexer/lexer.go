@@ -8,8 +8,7 @@ import (
 )
 
 type Lexer struct {
-	s scanner.Scanner
-
+	s  scanner.Scanner
 	ch rune
 }
 
@@ -37,6 +36,8 @@ func (l *Lexer) NextToken() token.Token {
 		t = l.token(token.MUL)
 	case '/':
 		t = l.token(token.DIV)
+	case '%':
+		t = l.token(token.MOD)
 	case '!':
 		t = l.either(newTokenChoice('=', token.NOT_EQ), token.BANG)
 	case '>':

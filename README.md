@@ -75,7 +75,7 @@ not 0. Built-in functions for vectors include `len()`, `append()`,
 `head()`, `tail()`
 
 ``` q
-x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+x = as_vector(1:10)
 
 print(x[1:3])
 print(append(x, [11, 12, 13], 14, "15"))
@@ -160,12 +160,12 @@ print(values(q))
     #> CharacterVector with 3 elements
     #> ["name", "age", "functional"]
     #> Vector with 3 elements
-    #> [true, "Q", 1]
+    #> ["Q", 1, true]
 
 ### Control flows
 
-Q supports `for ... in` loops and if eles conditions. Both the iteration
-and condition need to be put in parentheses.
+Q supports `for ... in` loops and `if eles` conditions. Both the
+iteration and condition need to be put in parentheses.
 
 ``` q
 for (name in ["Q", "R", "Python"]) {
@@ -210,6 +210,20 @@ result
 
 ### Functions
 
+Function definition uses the R style, simply create a function object
+with the `fn` keyword and then bind it to a name. Default arguments and
+named arguments are supported.
+
+``` q
+add = fn(x, y = 1, z = 1) {
+  x + y + z * 2
+}
+
+add(1, z = 2)
+```
+
+    #> 6
+
 Functions in Q are first-class citizens. They can be passed around as
 arguments and returned from other functions. There is a `return` keyword
 but functions can also use implicit returns. Here we define a `map`
@@ -218,9 +232,8 @@ each element of the vector.
 
 ``` q
 map = fn(arr, f) {
-    arr_length = len(arr)
     result = vector(len(arr))
-    for (i in 1:arr_length) {
+    for (i in arr) {
         result[i] = f(arr[i])
     }
     result
@@ -234,11 +247,33 @@ map = fn(arr, f) {
 Of course the preferred the way to to double a vector is to simply use
 the vectorized operator `*`.
 
+Another example of implementing a `filter()` function that take a vector
+and a predicate function and returns a vector with only the elements
+that satisfy the predicate.
+
+``` q
+filter = fn(x, f) {
+  result = vector(len(x))
+  for (i in 1:len(x)) {
+    if (f(x[i])) {
+      result[i] = x[i]
+    }
+  }
+  result[result != null]
+}
+
+filter(
+    [{name: "Ross",   job: "Paleontology"},
+     {name: "Monoca", job: "chef"}],
+    fn(x) x["name"] == "Ross"
+)
+```
+
+    #> [{"name": "Ross", "job": "Paleontology"}]
+
 ## Next steps
 
 - `...` for variadic arguments
-
-- fix `append()` to use copy
 
 - index tests for vector and dict
 

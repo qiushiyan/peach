@@ -19,5 +19,5 @@ func Register() {
 	RegisterBuiltin("values", dictValues, 1)
 	RegisterBuiltin("random", random, 0)
 	RegisterBuiltin("vector", vectorCreate, 1)
-	RegisterBuiltin("to_vector", vectorConvert, 1)
+	RegisterBuiltin("as_vector", vectorConvert, 1)
 }

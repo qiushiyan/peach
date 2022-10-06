@@ -41,7 +41,7 @@ func (bv *BaseVector) Inspect() string {
 	var out bytes.Buffer
 	elements := []string{}
 	for i, el := range bv.Elements {
-		if el == nil {
+		if el == NULL {
 			return "empty vector with " + fmt.Sprintf("%d", i) + " filled elements"
 		}
 		if i <= max_display {

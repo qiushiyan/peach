@@ -1,6 +1,10 @@
 package eval
 
-import "github.com/qiushiyan/qlang/pkg/object"
+import (
+	"math"
+
+	"github.com/qiushiyan/qlang/pkg/object"
+)
 
 func evalNumberInfixExpression(operator string, left object.Object, right object.Object) object.Object {
 	leftVal := left.(*object.Number).Value
@@ -15,6 +19,8 @@ func evalNumberInfixExpression(operator string, left object.Object, right object
 		return &object.Number{Value: leftVal * rightVal}
 	case "/":
 		return &object.Number{Value: leftVal / rightVal}
+	case "%":
+		return &object.Number{Value: math.Mod(leftVal, rightVal)}
 	case "<":
 		return evalBoolean(leftVal < rightVal)
 	case "<=":

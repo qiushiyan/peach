@@ -21,6 +21,7 @@ var precedences = map[token.TokenType]int{
 	token.PLUS:         SUM,
 	token.MINUS:        SUM,
 	token.DIV:          PRODUCT,
+	token.MOD:          PRODUCT,
 	token.MUL:          PRODUCT,
 	token.PIPE:         PIPE,
 	token.COLON:        RANGE,
@@ -33,6 +34,7 @@ func (p *Parser) registerAllInfixParsers() {
 	p.registerInfix(token.PLUS, p.parseInfixExpression)
 	p.registerInfix(token.MINUS, p.parseInfixExpression)
 	p.registerInfix(token.DIV, p.parseInfixExpression)
+	p.registerInfix(token.MOD, p.parseInfixExpression)
 	p.registerInfix(token.MUL, p.parseInfixExpression)
 	// logical
 	p.registerInfix(token.EQ, p.parseInfixExpression)

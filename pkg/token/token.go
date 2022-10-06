@@ -18,6 +18,7 @@ const (
 	PLUS         // +
 	MINUS        // -
 	DIV          // /
+	MOD          // %
 	BANG         // !
 	MUL          // *
 	GT           // >
@@ -108,6 +109,8 @@ func (t TokenType) String() string {
 		return "MINUS"
 	case DIV:
 		return "DIV"
+	case MOD:
+		return "MOD"
 	case BANG:
 		return "BANG"
 	case MUL:

@@ -15,7 +15,7 @@ func TestNextToken(t *testing.T) {
 		 x + y;
 	};
 	let result = five |> add(ten);
-	!-/*5||&;
+	!-/*5%||&;
 	5 < 10 > 5;
 	if (5 < 10) {
 		return true;
@@ -78,6 +78,7 @@ func TestNextToken(t *testing.T) {
 		{token.DIV, "/"},
 		{token.MUL, "*"},
 		{token.NUMBER, "5"},
+		{token.MOD, "%"},
 		{token.OR, "||"},
 		{token.VAND, "&"},
 		{token.SEMICOLON, ";"},
