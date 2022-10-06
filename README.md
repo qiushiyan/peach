@@ -262,14 +262,13 @@ filter = fn(x, f) {
   result[result != null]
 }
 
-filter(
-    [{name: "Ross",   job: "Paleontology"},
-     {name: "Monoca", job: "chef"}],
-    fn(x) x["name"] == "Ross"
-)
+[
+  {name: "Ross",   job: "Paleontology"},
+  {name: "Monoca", job: "Chef"}
+] |> filter(fn(x) x["job"] == "Chef")
 ```
 
-    #> [{"name": "Ross", "job": "Paleontology"}]
+    #> [{"name": "Monoca", "job": "Chef"}]
 
 ## Next steps
 
