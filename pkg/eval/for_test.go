@@ -8,7 +8,7 @@ import (
 
 func TestForExpression(t *testing.T) {
 	input := `
-	x = vector(3)
+	x = [null, null, null]
 	for (i in [1, 2, 3]) {
 		x[i] = i
 	}

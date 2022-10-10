@@ -39,7 +39,7 @@ func evalInfixExpression(operator string, left object.Object, right object.Objec
 		return evalVectorInfixExpression("&&", left.(object.IVector), right.(object.IVector))
 	case operator == "|":
 		if left.Type() != object.VECTOR_OBJ || right.Type() != object.VECTOR_OBJ {
-			return object.NewError("| should be used for vector comparison, got %s | %", left.Type(), right.Type())
+			return object.NewError("| should be used for vector comparison, got %s | %s", left.Type(), right.Type())
 		}
 		return evalVectorInfixExpression("||", left.(object.IVector), right.(object.IVector))
 
