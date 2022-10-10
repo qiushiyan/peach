@@ -12,7 +12,18 @@ func evalAssignExpression(node *ast.AssignExpression, env *object.Env) object.Ob
 		if object.IsError(val) {
 			return val
 		}
+		// this is to enable assign expression to change a variable defined in the outer scope
+		// first set the variable in the current scope, no matter what
+		// if the outer env contains the identifier, set it there, also recursively look up for the outer of outer (let statement does not track outer socpe)
+		// mostly useful to if and for blocks
 		env.Set(left.Value, val)
+		outer := env.GetOuterEnv()
+		for outer != nil {
+			if _, ok := outer.Get(left.Value); ok {
+				outer.Set(left.Value, val)
+			}
+			outer = outer.GetOuterEnv()
+		}
 		return object.NULL
 
 	case *ast.IndexExpression:

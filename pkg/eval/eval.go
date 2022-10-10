@@ -124,10 +124,12 @@ func evalIfExpression(ie *ast.IfExpression, env *object.Env) object.Object {
 	if object.IsError(condition) {
 		return condition
 	}
+
+	ifEnv := object.NewEnclosedEnvironment(env)
 	if isTruthy(condition) {
-		return Eval(ie.Consequence, env)
+		return Eval(ie.Consequence, ifEnv)
 	} else if ie.Alternative != nil {
-		return Eval(ie.Alternative, env)
+		return Eval(ie.Alternative, ifEnv)
 	} else {
 		return object.NULL
 	}

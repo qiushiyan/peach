@@ -24,6 +24,12 @@ func (e *Env) Get(name string) (Object, bool) {
 	return obj, ok
 }
 func (e *Env) Set(name string, val Object) Object {
+	// env.Set only set value in the current env
+	// to give for and if blocks a chance to set outer variables using assign expressions see evalAssignExpression
 	e.store[name] = val
 	return val
+}
+
+func (e *Env) GetOuterEnv() *Env {
+	return e.outer
 }
