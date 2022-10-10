@@ -4,6 +4,10 @@ Q Progrmaming Language
 Q is a toy programming language with a mix of R and Python’s syntax. It
 was written in Go and inspired by <https://interpreterbook.com/>.
 
+## Usage
+
+    go run cmd/q/main.go
+
 ## Assignments
 
 Both `=` and `<-` can be used for assignment. Variable names can contain
@@ -16,6 +20,16 @@ x + y
 ```
 
     #> 2
+
+There is also a `let` keyword for variable declaration.
+
+``` q
+let x <- 1
+```
+
+Q makes a difference between assignment and declartion in the context of
+nested scopes. This is when we work inside functions, `if` and `for`
+statements. See more details in the section on control structures below.
 
 ## Data structures
 
@@ -128,7 +142,7 @@ Elements are recycled only if it has lenght 1 or is a scalar.
 [1, 2, 3] + [4, 5]
 ```
 
-    #> [34mERROR: Incompatible vector lengths, left=3 and right=2[0m
+    #> ERROR: Incompatible vector lengths, left=3 and right=2
 
 Boolean indexing works as well
 
@@ -156,11 +170,11 @@ print(keys(q))
 print(values(q))
 ```
 
-    #> {"name": "Q", "age": 0, "functional": true}
+    #> {"functional": true, "name": "Q", "age": 0}
     #> CharacterVector with 3 elements
-    #> ["name", "age", "functional"]
+    #> ["functional", "name", "age"]
     #> Vector with 3 elements
-    #> ["Q", 1, true]
+    #> [true, "Q", 1]
 
 ### Control flows
 
@@ -181,8 +195,9 @@ for (name in ["Q", "R", "Python"]) {
     #> "R"
     #> "I don't like Python"
 
-Note that `for` and `if` blocks have their own scopes. So the following
-code will not work as expected:
+`for in` and `if` blocks have their own scopes. Inside their inner
+scope, we can (recursively) access and rebind a variable name defined in
+the outer scope using assignment without the `let` keyword like so.
 
 ``` q
 result = []
@@ -192,11 +207,10 @@ for (i in 1:3) {
 result
 ```
 
-    #> []
+    #> [1, 2, 3]
 
-The alternative is to use vectorized functions when possible, and if not
-create an empty vector with `vector()` and then start filling in the
-elements with indexing.
+Or you can create vector with specified length with `vector()` and then
+start filling in the elements with indexing.
 
 ``` q
 result = vector(3)
@@ -207,6 +221,21 @@ result
 ```
 
     #> [1, 2, 3]
+
+However, if we declare a variable in the inner scope with the `let`
+keyowrd, that variable will shadow the outer scope variable and get lost
+when the block ends. For example, the following code will not work as
+expected.
+
+``` q
+flag = true
+if (flag) {
+  let flag = false
+}
+flag
+```
+
+    #> true
 
 ### Functions
 
@@ -253,13 +282,13 @@ that satisfy the predicate.
 
 ``` q
 filter = fn(x, f) {
-  result = vector(len(x))
+  result = []
   for (i in 1:len(x)) {
     if (f(x[i])) {
-      result[i] = x[i]
+      result = append(result, x[i])
     }
   }
-  result[result != null]
+  result
 }
 
 [
@@ -272,7 +301,7 @@ filter = fn(x, f) {
 
 ## Next steps
 
-- `...` for variadic arguments
+- `...` for variadic arguments and spread operator
 
 - index tests for vector and dict
 

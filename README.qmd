@@ -23,6 +23,12 @@ knitr::knit_engines$set(q = function(options) {
 
 Q is a toy programming language with a mix of R and Python's syntax. It was written in Go and inspired by <https://interpreterbook.com/>.
 
+## Usage
+
+```
+go run cmd/q/main.go
+```
+
 ## Assignments
 
 Both `=` and `<-` can be used for assignment. Variable names can contain letters, numbers, and underscores, but must start with a letter.
@@ -32,6 +38,14 @@ x = 1
 y <- x
 x + y
 ```
+
+There is also a `let` keyword for variable declaration.
+```{q}
+let x <- 1
+```
+
+Q makes a difference between assignment and declartion in the context of nested scopes. This is when we work inside functions, `if` and `for` statements. See more details in the section on control structures below.
+
 
 ## Data structures
 
@@ -143,8 +157,8 @@ for (name in ["Q", "R", "Python"]) {
 ```
 
 
-Note that `for` and `if` blocks have their own scopes. So the following code will not work as expected:
 
+`for in` and `if` blocks have their own scopes. Inside their inner scope, we can (recursively) access and rebind a variable name defined in the outer scope using assignment without the `let` keyword like so.
 
 ```{q}
 result = []
@@ -154,7 +168,7 @@ for (i in 1:3) {
 result
 ```
 
-The alternative is to use vectorized functions when possible, and if not create an empty vector with `vector()` and then start filling in the elements with indexing.
+Or you can create vector with specified length with `vector()` and then start filling in the elements with indexing.
 
 ```{q}
 result = vector(3)
@@ -164,6 +178,15 @@ for (i in 1:3) {
 result
 ```
 
+However, if we declare a variable in the inner scope with the `let` keyowrd, that variable will shadow the outer scope variable and get lost when the block ends. For example, the following code will not work as expected.
+
+```{q}
+flag = true
+if (flag) {
+  let flag = false
+}
+flag
+```
 
 ### Functions
 
@@ -197,13 +220,13 @@ Another example of implementing a `filter()` function that take a vector and a p
 
 ```{q}
 filter = fn(x, f) {
-  result = vector(len(x))
+  result = []
   for (i in 1:len(x)) {
     if (f(x[i])) {
-      result[i] = x[i]
+      result = append(result, x[i])
     }
   }
-  result[result != null]
+  result
 }
 
 [
@@ -214,7 +237,7 @@ filter = fn(x, f) {
 
 ## Next steps
 
-* `...` for variadic arguments
+* `...` for variadic arguments and spread operator
 
 * index tests for vector and dict
 
