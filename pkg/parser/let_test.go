@@ -15,7 +15,7 @@ func TestLetStatements(t *testing.T) {
 		expectedValue      interface{}
 	}{
 		{"let x = 5", "x", 5.0},
-		{"let y = true;", "y", true},
+		{"let y <- true;", "y", true},
 		{"let foobar = y;", "foobar", "y"},
 	}
 

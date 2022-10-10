@@ -14,11 +14,18 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 
 	statement.Name = &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
 
-	if !p.expectNextToken(token.ASSIGN) {
+	if !p.nextTokenIs(token.ASSIGN_ARROW) && !p.nextTokenIs(token.ASSIGN) {
 		return nil
 	}
 
 	p.advanceToken()
+	p.advanceToken()
+	// if !p.expectNextToken(token.ASSIGN) {
+	// 	return nil
+	// }
+
+	// p.advanceToken()
+
 	statement.Value = p.parseExpression(LOWEST)
 	if p.endOfExpression() {
 		p.advanceToken()
