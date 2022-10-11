@@ -6,6 +6,10 @@ import (
 	"github.com/qiushiyan/qlang/pkg/object"
 )
 
+func evalNumberLiteral(value float64) object.Object {
+	return &object.Number{Value: value}
+}
+
 func evalNumberInfixExpression(operator string, left object.Object, right object.Object) object.Object {
 	leftVal := left.(*object.Number).Value
 	rightVal := right.(*object.Number).Value

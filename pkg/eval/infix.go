@@ -42,11 +42,9 @@ func evalInfixExpression(operator string, left object.Object, right object.Objec
 			return object.NewError("| should be used for vector comparison, got %s | %s", left.Type(), right.Type())
 		}
 		return evalVectorInfixExpression("||", left.(object.IVector), right.(object.IVector))
-
 	case operator == "==":
 		return evalBoolean(left == right)
 	case operator == "!=":
-
 		return evalBoolean(left != right)
 	case operator == "&&":
 		return evalBoolean(left == object.TRUE && right == object.TRUE)
