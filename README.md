@@ -6,7 +6,13 @@ was written in Go and inspired by <https://interpreterbook.com/>.
 
 ## Usage
 
-    go run cmd/q/main.go
+Go to [releases](https://github.com/qiushiyan/qlang/releases/tag/v0.0.1-lw) and download the corresponding binary.
+
+Alternatively if you have Go installed, you can clone and cd into this repo and run
+
+```
+go run cmd/q/main.go
+```
 
 ## Assignments
 
