@@ -25,4 +25,3 @@ jobs:
           goarch: ${{ matrix.goarch }}
           project_path: "./cmd/q"
           binary_name: "q"
-          extra_files: LICENSE.md README.md
