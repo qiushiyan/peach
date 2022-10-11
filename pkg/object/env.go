@@ -18,6 +18,7 @@ type Env struct {
 
 func (e *Env) Get(name string) (Object, bool) {
 	obj, ok := e.store[name]
+	// if not found in current env, recursively search outer env
 	if !ok && e.outer != nil {
 		obj, ok = e.outer.Get(name)
 	}
@@ -32,4 +33,18 @@ func (e *Env) Set(name string, val Object) Object {
 
 func (e *Env) GetOuterEnv() *Env {
 	return e.outer
+}
+
+func (e *Env) InStore(name string) bool {
+	_, ok := e.store[name]
+	return ok
+}
+
+func (e *Env) GetAllEnvs() []*Env {
+	envs := []*Env{e}
+	for e.outer != nil {
+		envs = append(envs, e.outer)
+		e = e.outer
+	}
+	return envs
 }

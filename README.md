@@ -170,11 +170,11 @@ print(keys(q))
 print(values(q))
 ```
 
-    #> {"functional": true, "name": "Q", "age": 0}
+    #> {"age": 0, "functional": true, "name": "Q"}
     #> CharacterVector with 3 elements
-    #> ["functional", "name", "age"]
+    #> ["age", "functional", "name"]
     #> Vector with 3 elements
-    #> [true, "Q", 1]
+    #> [1, true, "Q"]
 
 ### Control flows
 
