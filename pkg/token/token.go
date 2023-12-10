@@ -55,6 +55,9 @@ const (
 	RETURN   // return
 	FOR      // for
 	IN       // IN
+
+	// Comment
+	COMMENT // #
 )
 
 type TokenType byte
@@ -175,6 +178,9 @@ func (t TokenType) String() string {
 		return "FOR"
 	case IN:
 		return "IN"
+	case COMMENT:
+		return "COMMENT"
 	}
+
 	return "UNKNOWN"
 }

@@ -14,6 +14,7 @@ func TestNextToken(t *testing.T) {
 	let add = fn(x, y) {
 		 x + y;
 	};
+	# a comment
 	let result = five |> add(ten);
 	!-/*5%||&;
 	5 < 10 > 5;
@@ -62,6 +63,7 @@ func TestNextToken(t *testing.T) {
 		{token.RBRACE, "}"},
 		{token.SEMICOLON, ";"},
 		{token.NEWLINE, "\n"},
+		{token.COMMENT, "#"},
 		{token.LET, "let"},
 		{token.IDENTIFIER, "result"},
 		{token.ASSIGN, "="},

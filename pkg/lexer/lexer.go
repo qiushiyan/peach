@@ -15,7 +15,7 @@ type Lexer struct {
 func New(in io.Reader) *Lexer {
 	var s scanner.Scanner
 	s.Init(in)
-	s.Mode ^= scanner.ScanComments // don't skip comments
+	s.Mode ^= scanner.ScanComments // skip comments
 	s.Whitespace ^= 1 << '\n'      // don't skip tabs and new lines
 	l := &Lexer{s: s}
 	l.readRune()
@@ -36,6 +36,9 @@ func (l *Lexer) NextToken() token.Token {
 		t = l.token(token.MUL)
 	case '/':
 		t = l.token(token.DIV)
+	case '#':
+		t = l.token(token.COMMENT)
+		l.skipComments()
 	case '%':
 		t = l.token(token.MOD)
 	case '!':
@@ -151,4 +154,12 @@ func (l *Lexer) either(choice TokenChoice, otherwise token.TokenType) token.Toke
 		}
 	}
 	return token.Token{Type: otherwise, Literal: lit, Line: p.Line, Col: col}
+}
+
+func (l *Lexer) skipComments() {
+	for l.ch == '#' {
+		for l.ch != '\n' && l.ch != scanner.EOF {
+			l.readRune()
+		}
+	}
 }
