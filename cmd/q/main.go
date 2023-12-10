@@ -19,6 +19,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
+
 		fmt.Printf("Hello %s! Welcome to the Q language!\n",
 			user.Username)
 		repl.Start(os.Stdin, os.Stdout)

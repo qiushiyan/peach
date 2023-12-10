@@ -6,6 +6,7 @@ import (
 	"io"
 	"strings"
 
+	"github.com/qiushiyan/qlang/pkg/config"
 	"github.com/qiushiyan/qlang/pkg/eval"
 	"github.com/qiushiyan/qlang/pkg/lexer"
 	"github.com/qiushiyan/qlang/pkg/object"
@@ -33,7 +34,12 @@ func Start(in io.Reader, out io.Writer) {
 		evaluated := Evaluate(out, line, env)
 		if evaluated != nil {
 			if evaluated.Type() != object.NULL_OBJ {
-				io.WriteString(out, evaluated.Inspect())
+				if evaluated.Type() == object.ERROR_OBJ {
+					io.WriteString(out, config.COLOR_BLUE+"ERROR: "+evaluated.Inspect()+config.COLOR_RESET)
+				} else {
+					io.WriteString(out, evaluated.Inspect())
+
+				}
 				io.WriteString(out, "\n")
 			}
 		}
@@ -55,9 +61,10 @@ func Evaluate(out io.Writer, input string, env *object.Env) object.Object {
 }
 
 func printParserErrors(out io.Writer, errors []string) {
-	io.WriteString(out, "An error occurred!\n")
-	io.WriteString(out, " syntax error:\n")
+
+	io.WriteString(out, config.COLOR_RED+"syntax error:\n")
 	for _, msg := range errors {
 		io.WriteString(out, "\t"+msg+"\n")
 	}
+	io.WriteString(out, config.COLOR_RESET)
 }

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <script src="wasm_exec_tiny.js"></script>
+    <script>
+        if (WebAssembly) {
+            // WebAssembly.instantiateStreaming is not currently available in Safari
+            if (WebAssembly && !WebAssembly.instantiateStreaming) { // polyfill
+                WebAssembly.instantiateStreaming = async (resp, importObject) => {
+                    const source = await (await resp).arrayBuffer();
+                    return await WebAssembly.instantiate(source, importObject);
+                };
+            }
+
+            const go = new Go();
+
+
+            WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then((result) => {
+                go.run(result.instance);
+
+                console.log(run("1+2"))
+            });
+        } else {
+            console.log("WebAssembly is not supported in your browser")
+        }
+    </script>
+</head>
+
+<body>
+    <p>hello world</p>
+    <main id="wasm">
+        <form id="form">
+            <input type="" name="code">
+            <button type="submit">run</button>
+        </form>
+        <pre id="output"></pre>
+    </main>
+
+    <script>
+
+        const formEl = document.getElementById("form");
+        const preEl = document.getElementById("output");
+        formEl.addEventListener("submit", (event) => {
+            event.preventDefault()
+            const formData = new FormData(formEl);
+            const code = formData.get("code");
+
+            const result = run(code);
+            console.log(result)
+            if (result.error) {
+                console.error(result.error);
+            } else {
+                console.log("here")
+                preEl.textContent = result.result;
+            }
+        })
+
+    </script>
+</body>
+
+</html>

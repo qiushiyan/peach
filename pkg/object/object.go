@@ -14,10 +14,6 @@ const (
 	VECTOR_OBJ = "VECTOR"
 	// dict
 	DICT_OBJ = "DICT"
-
-	// colors
-	COLOR_BLUE  = "\033[34m"
-	COLOR_RESET = "\033[0m"
 )
 
 // only need one "constant" object for true, false and null

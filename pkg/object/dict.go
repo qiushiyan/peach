@@ -7,7 +7,7 @@ import (
 )
 
 type DictPair struct {
-	Key   Object // the origional key in DictLiteral, one of String, Integer, or Boolean
+	Key   Object // the original key in DictLiteral, one of String, Integer, or Boolean
 	Value Object
 }
 
