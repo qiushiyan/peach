@@ -10,6 +10,7 @@ import (
 )
 
 func Eval(node ast.Node, env *object.Env) object.Object {
+
 	switch node := node.(type) {
 	case *ast.Program:
 		return evalProgram(node, env)
@@ -75,6 +76,11 @@ func Eval(node ast.Node, env *object.Env) object.Object {
 }
 
 func evalProgram(program *ast.Program, env *object.Env) object.Object {
+	if len(program.Statements) == 0 {
+		// when the program is empty, e.g., a file with only comments
+		return &object.Null{}
+	}
+
 	var result object.Object
 
 	for _, statement := range program.Statements {
