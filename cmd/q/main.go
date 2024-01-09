@@ -31,7 +31,8 @@ func main() {
 
 	buf, err := os.ReadFile(file)
 	if err != nil {
-		panic(err)
+		fmt.Printf("error: %v\n", err)
+		return
 	}
 	evaluated := repl.Evaluate(os.Stdout, string(buf), object.NewEnv())
 	if evaluated != nil {

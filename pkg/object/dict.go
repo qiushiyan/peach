@@ -19,8 +19,9 @@ type Dict struct {
 func (d *Dict) Type() ObjectType { return DICT_OBJ }
 func (d *Dict) Inspect() string {
 	var out bytes.Buffer
-	pairs := []string{}
-	for _, pair := range d.Pairs {
+	pairs := make([]string, 0, len(d.Pairs))
+	for k := range d.Pairs {
+		pair := d.Pairs[k]
 		pairs = append(pairs, fmt.Sprintf("%s: %s",
 			pair.Key.Inspect(), pair.Value.Inspect()))
 	}
@@ -30,8 +31,9 @@ func (d *Dict) Inspect() string {
 	return out.String()
 }
 func (d *Dict) Keys() []Object {
-	keys := []Object{}
-	for _, pair := range d.Pairs {
+	keys := make([]Object, 0, len(d.Pairs))
+	for k := range d.Pairs {
+		pair := d.Pairs[k]
 		keys = append(keys, pair.Key)
 	}
 	return keys

@@ -18,9 +18,9 @@ func (fl *FunctionLiteral) expressionNode()      {}
 func (fl *FunctionLiteral) TokenLiteral() string { return fl.Token.Literal }
 func (fl *FunctionLiteral) String() string {
 	var out bytes.Buffer
-	params := []string{}
-	for _, p := range fl.Parameters {
-		params = append(params, p.String())
+	params := make([]string, len(fl.Parameters))
+	for i := range fl.Parameters {
+		params[i] = fl.Parameters[i].String()
 	}
 	out.WriteString(fl.TokenLiteral())
 	out.WriteString("(")

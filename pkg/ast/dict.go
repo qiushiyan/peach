@@ -1,6 +1,10 @@
 package ast
 
-import "github.com/qiushiyan/qlang/pkg/token"
+import (
+	"bytes"
+
+	"github.com/qiushiyan/qlang/pkg/token"
+)
 
 type DictLiteral struct {
 	Token token.Token // the '{' token
@@ -12,15 +16,16 @@ func (ml *DictLiteral) expressionNode() {}
 func (ml *DictLiteral) TokenLiteral() string { return ml.Token.Literal }
 
 func (ml *DictLiteral) String() string {
-	var out string
-	out += "{\n"
-	for k, v := range ml.Pairs {
-		out += k.String()
-		out += ": "
-		out += v.String()
-		out += ", "
-		out += "\n"
+	var out bytes.Buffer
+	out.WriteString("{\n")
+	for k := range ml.Pairs {
+		v := ml.Pairs[k]
+
+		out.WriteString(k.String())
+		out.WriteString(": ")
+		out.WriteString(v.String())
+		out.WriteString(", n")
 	}
-	out += "\n}"
-	return out
+	out.WriteString("\n}")
+	return out.String()
 }

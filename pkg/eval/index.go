@@ -62,13 +62,15 @@ func evalVectorIndexVectorExpression(vec object.IVector, index object.IVector) o
 	if index.Length() > vec.Length() {
 		return object.NewError("index vector length can not be greater than vector length, got %d > %d", index.Length(), vec.Length())
 	}
-	var values []object.Object
+	// var values []object.Object
+	values := make([]object.Object, 0, index.Length())
 	switch index := index.(type) {
 	case *object.NumericVector:
-		for _, i := range index.Values() {
-			idx := int(i.(*object.Number).Value)
+		for i := range index.Values() {
+			el := index.Values()[i]
+			idx := int(el.(*object.Number).Value)
 			if idx := idx - 1; idx < vec.Length() && idx >= 0 {
-				values = append(values, vec.Values()[idx])
+				values[i] = vec.Values()[idx]
 			} else {
 				return object.NewError("index out of bounds for vector of length %d, got %d", vec.Length(), idx)
 			}

@@ -17,9 +17,9 @@ func (ce *CallExpression) expressionNode()      {}
 func (ce *CallExpression) TokenLiteral() string { return ce.Token.Literal }
 func (ce *CallExpression) String() string {
 	var out bytes.Buffer
-	args := []string{}
-	for _, a := range ce.Arguments {
-		args = append(args, a.String())
+	args := make([]string, len(ce.Arguments))
+	for i := range ce.Arguments {
+		args[i] = ce.Arguments[i].String()
 	}
 	out.WriteString(ce.Function.String())
 	out.WriteString("(")

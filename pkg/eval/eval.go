@@ -97,13 +97,14 @@ func evalProgram(program *ast.Program, env *object.Env) object.Object {
 }
 
 func evalExpressions(exps []ast.Expression, env *object.Env) []object.Object {
-	var result []object.Object
-	for _, e := range exps {
+	result := make([]object.Object, len(exps))
+	for i := range exps {
+		e := exps[i]
 		evaluated := Eval(e, env)
 		if object.IsError(evaluated) {
 			return []object.Object{evaluated}
 		}
-		result = append(result, evaluated)
+		result[i] = evaluated
 	}
 	return result
 }
@@ -113,6 +114,6 @@ func testEval(input string) object.Object {
 	p := parser.New(l)
 	env := object.NewEnv()
 	program := p.ParseProgram()
-	// no registeration of stdlib in testEval
+	// no registration of std lib in testEval
 	return Eval(program, env)
 }

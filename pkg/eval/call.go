@@ -38,7 +38,7 @@ type Arguments struct {
 // reuturn 3 values
 // the parsed map, whether parsing is successful, error object
 func evalArguments(args []ast.Expression, env *object.Env) (*Arguments, object.Object, bool) {
-	result := &Arguments{Args: []object.Object{}, Kwargs: map[string]object.Object{}}
+	result := &Arguments{Args: make([]object.Object, 0, len(args)), Kwargs: map[string]object.Object{}}
 	for _, expr := range args {
 		if assignExpr, ok := expr.(*ast.AssignExpression); ok {
 			identifier, ok := assignExpr.Left.(*ast.Identifier)
@@ -109,10 +109,12 @@ func makeFunctionEnv(fn *object.Function, args *Arguments, argLength int) (*obje
 	for idx, positionalArg := range args.Args {
 		env.Set(fn.Parameters[idx].Value, positionalArg)
 	}
-	for name, kwarg := range args.Kwargs {
+	for name := range args.Kwargs {
+		kwarg := args.Kwargs[name]
 		kwargFound := false
-		// if kwarg is found in function parameters, set it
-		for _, param := range fn.Parameters {
+		// if a keyword argument is found in function parameters, set it
+		for i := range fn.Parameters {
+			param := fn.Parameters[i]
 			if param.Value == name {
 				env.Set(name, kwarg)
 				kwargFound = true

@@ -5,7 +5,7 @@ import "github.com/qiushiyan/qlang/pkg/object"
 func dictKeys(env *object.Env, args ...object.Object) object.Object {
 	switch arg := args[0].(type) {
 	case *object.Dict:
-		var keys []object.Object
+		keys := make([]object.Object, 0, len(arg.Pairs))
 		for _, pair := range arg.Pairs {
 			keys = append(keys, pair.Key)
 		}
